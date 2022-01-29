@@ -10,6 +10,9 @@ public class IntListExercises {
      */
     public static void addConstant(IntList lst, int c) {
         IntList head = lst;
+        if (head == null)
+            return;
+
         for (int i = 0; i < lst.size(); i++) {
             head.first += c;
             head = head.rest;
