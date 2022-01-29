@@ -10,16 +10,9 @@ public class SquarePrimesTest {
      * It passes, but the starter code implementation of isPrime
      * is broken. Write your own JUnit Test to try to uncover the bug!
      */
-    @Test
-    public void testSquarePrimesSimple1() {
-        IntList lst = IntList.of(-1, 0, 1, 2, 3, 4);
-        boolean changed = IntListExercises.squarePrimes(lst);
-        assertEquals("-1 -> 0 -> 1 -> 2 -> 9 -> 4", lst.toString());
-        assertTrue(changed);
-    }
 
     @Test
-    public void testSquarePrimesSimple2() {
+    public void testSquarePrimesSimple1() {
         IntList lst = IntList.of(14, 15, 16, 17, 18);
         boolean changed = IntListExercises.squarePrimes(lst);
         assertEquals("14 -> 15 -> 16 -> 289 -> 18", lst.toString());
@@ -27,7 +20,7 @@ public class SquarePrimesTest {
     }
 
     @Test
-    public void testSquarePrimesSimple3() {
+    public void testSquarePrimesSimple2() {
         IntList lst = IntList.of(-1, 0, 1, 2, 4);
         boolean changed = IntListExercises.squarePrimes(lst);
         assertEquals("-1 -> 0 -> 1 -> 2 -> 4", lst.toString());
@@ -35,10 +28,11 @@ public class SquarePrimesTest {
     }
 
     @Test
-    public void testSquarePrimesSimple4() {
-        IntList lst = IntList.of(3, 5, 7, 11);
+    public void testSquarePrimesSimple3() {
+        IntList lst = IntList.of(3, 16, 5, 7, 11);
         boolean changed = IntListExercises.squarePrimes(lst);
-        assertEquals("9 -> 25 -> 49 -> 121", lst.toString());
+        assertEquals("9 -> 16 -> 25 -> 49 -> 121", lst.toString());
         assertTrue(changed);
     }
+
 }

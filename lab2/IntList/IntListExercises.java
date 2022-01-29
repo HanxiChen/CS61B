@@ -75,12 +75,11 @@ public class IntListExercises {
         }
 
         boolean currElemIsPrime = Primes.isPrime(lst.first);
-        boolean squarePrimes = squarePrimes(lst.rest);
 
         if (currElemIsPrime) {
             lst.first *= lst.first;
         }
 
-        return currElemIsPrime || squarePrimes;
+        return squarePrimes(lst.rest) || currElemIsPrime;
     }
 }
