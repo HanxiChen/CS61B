@@ -96,5 +96,6 @@ public class ArrayDeque<T> {
     public void resize(int capacity){
         T[] a1 = (T[]) new Object[capacity];
         System.arraycopy(array, 0, a1, 0, size);
+        array = a1;
     }
 }
