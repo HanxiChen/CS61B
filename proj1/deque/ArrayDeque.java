@@ -76,6 +76,7 @@ public class ArrayDeque<T> {
 
         size--;
         T x = array[front];
+        array[front] = null;
         front = (front + 1 + array.length) % array.length;
         return x;
     }
@@ -85,6 +86,7 @@ public class ArrayDeque<T> {
             return null;
         size--;
         T x = array[rear];
+        array[rear] = null;
         rear = (rear - 1 + array.length) % array.length;
         return x;
     }
