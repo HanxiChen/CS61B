@@ -60,7 +60,7 @@ public class ArrayDeque<T> {
 
     public void printDeque(){
         if (!isEmpty()){
-            for (int i = front; i != rear; i = (i+1) % DEFAULT_CAPACITY) {
+            for (int i = front; i != rear; i = (i+1) % array.length) {
                 System.out.print(array[i]);
                 if ((i+1) % array.length != rear)
                     System.out.println(" -> ");
