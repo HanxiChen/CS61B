@@ -27,9 +27,11 @@ public class BuggyAList<Item> {
     /** Resizes the underlying array to the target capacity. */
     private void resize(int capacity) {
         Item[] a = (Item[]) new Object[capacity];
-        for (int i = 0; i < size; i += 1) {
+        for (int i = 0; i < size && i < capacity; i += 1) {
             a[i] = items[i];
         }
+        if (capacity < size)
+            size = capacity;
         items = a;
     }
 
