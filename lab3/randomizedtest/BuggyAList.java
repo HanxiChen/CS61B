@@ -30,8 +30,9 @@ public class BuggyAList<Item> {
         for (int i = 0; i < size && i < capacity; i += 1) {
             a[i] = items[i];
         }
-        if (capacity < size)
+        if(capacity < size) {
             size = capacity;
+        }
         items = a;
     }
 
@@ -59,7 +60,7 @@ public class BuggyAList<Item> {
     }
 
     /** Deletes item from back of the list and
-      * returns deleted item. */
+     * returns deleted item. */
     public Item removeLast() {
         if ((size < items.length / 4) && (size > 4)) {
             resize(size / 4);
