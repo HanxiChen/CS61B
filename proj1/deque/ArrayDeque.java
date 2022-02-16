@@ -14,15 +14,21 @@ public class ArrayDeque<T> implements Deque<T> {
         front = 0;
         rear = 0;
     }
+    public ArrayDeque(int capacity) {
+        size = 0;
+        array = (T[]) new Object[capacity];
+        front = 0;
+        rear = 0;
+    }
 
     @Override
     public void addFirst(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY){
+        if (size > DEFAULT_CAPACITY) {
             resize(size * 2);
         }
 
-        if (size != 0){
+        if (size != 0) {
             front = (front - 1 + array.length) % array.length;
         }
 
@@ -32,7 +38,7 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public void addLast(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY){
+        if (size > DEFAULT_CAPACITY) {
             resize(size * 2);
         }
 
@@ -66,21 +72,21 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public void printDeque() {
-        if (!isEmpty()){
+        if (!isEmpty()) {
             for (int i = front; i != rear; i = (i + 1) % array.length) {
                 System.out.print(array[i]);
-                if ((i + 1) % array.length != rear){
+                if ((i + 1) % array.length != rear) {
                     System.out.println(" -> ");
                 }
             }
-        }else{
+        } else {
             System.out.println("队列为空");
         }
     }
 
     @Override
     public T removeFirst() {
-        if (isEmpty()){
+        if (isEmpty()) {
             return null;
         }
 
@@ -93,7 +99,7 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public T removeLast() {
-        if (isEmpty()){
+        if (isEmpty()) {
             return null;
         }
 
@@ -110,8 +116,66 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     public void resize(int capacity) {
+
         T[] a1 = (T[]) new Object[capacity];
         System.arraycopy(array, 0, a1, 0, size);
         array = a1;
+    }
+
+    public ArrayIterator<T> iterator() {
+        return new ArrayIterator<T>();
+    }
+
+    private class ArrayIterator<T>{
+        private int wizPos;
+
+        public ArrayIterator(){
+            wizPos = front;
+        }
+
+        public boolean hasNext(){
+            return wizPos < rear;
+        }
+
+        public T next(){
+            T returnItem = (T) array[wizPos];
+            wizPos++;
+            return returnItem;
+        }
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        if (other.getClass() != this.getClass()) {
+            return false;
+        }
+        ArrayDeque<T> o = (ArrayDeque<T>) other;
+        if (o.size() != this.size()) {
+            return false;
+        }
+        for (int i = front; i < rear; i = (i + 1 + array.length) % array.length) {
+            if (this.get(i) != o.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder returnSB = new StringBuilder("{");
+        for (int i = 0; i < size - 1; i = (i + 1 + array.length) % array.length) {
+            returnSB.append(array[i].toString());
+            returnSB.append(", ");
+        }
+        returnSB.append(array[size - 1]);
+        returnSB.append("}");
+        return returnSB.toString();
     }
 }

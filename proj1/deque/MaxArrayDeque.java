@@ -4,7 +4,7 @@ import net.sf.saxon.functions.Minimax;
 
 import java.util.Comparator;
 
-public class MaxArrayDeque<T> {
+public class MaxArrayDeque<T extends Comparable> implements Comparator<T>{
     private static final int DEFAULT_CAPACITY = 8;
 
     private int size;
@@ -113,11 +113,27 @@ public class MaxArrayDeque<T> {
         array = a1;
     }
 
-//    public T max(){
-//        if (this == null)
-//            return null;
-//    }
-//    public T max(Comparator<T> c){
-//
-//    }
+    public T max() {
+        if (array == null){
+            return null;
+        }
+
+        T max = array[front];
+        for (int i = (front + 1 + array.length) % array.length; i < rear; i = (i + 1 + array.length) % array.length) {
+            if (comparator.compare(max, array[i]) < 0) {
+                max = array[i];
+            }
+        }
+        return max;
+    }
+    public T max(Comparator<T> c) {
+        this.comparator = c;
+        return max();
+    }
+
+
+    @Override
+    public int compare(T o1, T o2) {
+        return array[(int)o1].compareTo(array[(int)o2]);
+    }
 }

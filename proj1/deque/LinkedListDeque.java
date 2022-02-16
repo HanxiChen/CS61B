@@ -1,18 +1,16 @@
 package deque;
 
-import java.util.Iterator;
-
 public class LinkedListDeque<T> implements Deque<T> {
     private int size;
     private Node sentinel;
     private Node last;
 
     private class Node {
-        public Node prev;
-        public T item;
-        public Node next;
+        Node prev;
+        T item;
+        Node next;
 
-        public Node(Node p, T i, Node n) {
+        Node(Node p, T i, Node n) {
             prev = p;
             item = i;
             next = n;
@@ -28,7 +26,7 @@ public class LinkedListDeque<T> implements Deque<T> {
     public void addFirst(T item) {
         size++;
 
-        if (size == 1){
+        if (size == 1) {
             Node add = new Node(sentinel, item, sentinel);
             sentinel.next = add;
             sentinel.prev = add;
@@ -46,7 +44,7 @@ public class LinkedListDeque<T> implements Deque<T> {
     public void addLast(T item) {
         size++;
 
-        if (size == 1){
+        if (size == 1) {
             Node add = new Node(sentinel, item, sentinel);
             sentinel.next = add;
             sentinel.prev = add;
@@ -90,10 +88,11 @@ public class LinkedListDeque<T> implements Deque<T> {
     @Override
     public void printDeque() {
         Node p = sentinel.next;
-        if (p.item == null)
+        if (p.item == null) {
             System.out.println("");
+        }
 
-        while(p.next != sentinel){
+        while(p.next != sentinel) {
             System.out.print(p.item + " -> ");
             p = p.next;
         }
@@ -102,13 +101,14 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public T removeFirst() {
-        if (isEmpty())
+        if (isEmpty()) {
             return null;
+        }
 
         size--;
         T x = sentinel.next.item;
 
-        if (size == 0){
+        if (size == 0) {
             sentinel.next = null;
             sentinel.prev = null;
             return x;
@@ -122,8 +122,9 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public T removeLast() {
-        if (isEmpty())
+        if (isEmpty()) {
             return null;
+        }
 
         size--;
 
@@ -139,8 +140,9 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public T get(int index) {
-        if (isEmpty())
+        if (isEmpty()) {
             return null;
+        }
 
         Node p = sentinel;
 
@@ -153,22 +155,79 @@ public class LinkedListDeque<T> implements Deque<T> {
         return p.item;
     }
 
-//    public Iterator<T> iterator(){
-//
-//    }
-//
-//    public boolean equals(Object o){
-//
-//    }
+    public LinkedListIterator<T> iterator(){
+        return new LinkedListIterator<T>();
+    }
+    private class LinkedListIterator<T>{
+        private Node p;
+
+        public LinkedListIterator() {
+            p = sentinel.next;
+        }
+
+        public boolean hasNext() {
+            return p.next != sentinel;
+        }
+
+        public T next() {
+            T returnItem = (T) p.item;
+            p = p.next;
+            return returnItem;
+        }
+    }
+
+    public boolean equals(Object o){
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof LinkedListDeque) {
+            return false;
+        }
+
+        LinkedListDeque<T> other = (LinkedListDeque<T>) o;
+        if (this.size() != other.size()) {
+            return false;
+        }
+        Node p1 = this.sentinel.next;
+        Node p2 = other.sentinel.next;
+        for (int i = 0; i < size; i++) {
+            if (p1 != last && p2 != last) {
+                if (p1.item != p2.item) {
+                    return false;
+                }
+            }
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder returnSB = new StringBuilder("{");
+        Node p = sentinel.next;
+        for (; p != last; p = p.next) {
+            returnSB.append(p.item.toString());
+            returnSB.append(" -> ");
+        }
+        returnSB.append(p.item);
+        returnSB.append("}");
+        return returnSB.toString();
+    }
 
     //与给get相同，但要使用递归
     public T getRecursive(int index) {
         return getRecursive(index, sentinel.next);
     }
     public T getRecursive(int index, Node n) {
-        if (index == 0)
+        if (index == 0){
             return n.item;
-        else
+        } else {
             return getRecursive(--index, n.next);
+        }
     }
 }
