@@ -113,11 +113,11 @@ public class MaxArrayDeque<T> {
         array = a1;
     }
 
-    public T max(){
-        if (this == null)
-            return null;
-    }
-    public T max(Comparator<T> c){
-
-    }
+//    public T max(){
+//        if (this == null)
+//            return null;
+//    }
+//    public T max(Comparator<T> c){
+//
+//    }
 }

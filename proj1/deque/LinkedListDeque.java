@@ -2,30 +2,30 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Deque<T>{
+public class LinkedListDeque<T> implements Deque<T> {
     private int size;
     private Node sentinel;
     private Node last;
 
-    private class Node{
+    private class Node {
         public Node prev;
         public T item;
         public Node next;
 
-        public Node(Node p, T i, Node n){
+        public Node(Node p, T i, Node n) {
             prev = p;
             item = i;
             next = n;
         }
     }
 
-    public LinkedListDeque(){
+    public LinkedListDeque() {
         sentinel = new Node(null, null, null);
         size = 0;
     }
 
     @Override
-    public void addFirst(T item){
+    public void addFirst(T item) {
         size++;
 
         if (size == 1){
@@ -43,7 +43,7 @@ public class LinkedListDeque<T> implements Deque<T>{
     }
 
     @Override
-    public void addLast(T item){
+    public void addLast(T item) {
         size++;
 
         if (size == 1){
@@ -68,7 +68,7 @@ public class LinkedListDeque<T> implements Deque<T>{
 //    }
 
     @Override
-    public int size(){
+    public int size() {
         return size;
     }
 
@@ -88,7 +88,7 @@ public class LinkedListDeque<T> implements Deque<T>{
 //    }
 
     @Override
-    public void printDeque(){
+    public void printDeque() {
         Node p = sentinel.next;
         if (p.item == null)
             System.out.println("");
@@ -101,7 +101,7 @@ public class LinkedListDeque<T> implements Deque<T>{
     }
 
     @Override
-    public T removeFirst(){
+    public T removeFirst() {
         if (isEmpty())
             return null;
 
@@ -121,7 +121,7 @@ public class LinkedListDeque<T> implements Deque<T>{
     }
 
     @Override
-    public T removeLast(){
+    public T removeLast() {
         if (isEmpty())
             return null;
 
@@ -138,14 +138,14 @@ public class LinkedListDeque<T> implements Deque<T>{
     }
 
     @Override
-    public T get(int index){
+    public T get(int index) {
         if (isEmpty())
             return null;
 
         Node p = sentinel;
 
         for (int i = 1; i <= index; i++) {
-            if (p.next != null){
+            if (p.next != null) {
                 p = p.next;
             }
         }
@@ -162,10 +162,10 @@ public class LinkedListDeque<T> implements Deque<T>{
 //    }
 
     //与给get相同，但要使用递归
-    public T getRecursive(int index){
+    public T getRecursive(int index) {
         return getRecursive(index, sentinel.next);
     }
-    public T getRecursive(int index, Node n){
+    public T getRecursive(int index, Node n) {
         if (index == 0)
             return n.item;
         else

@@ -1,6 +1,6 @@
 package deque;
 
-public class ArrayDeque<T> implements Deque<T>{
+public class ArrayDeque<T> implements Deque<T> {
     private static final int DEFAULT_CAPACITY = 8;
 
     private int size;
@@ -8,7 +8,7 @@ public class ArrayDeque<T> implements Deque<T>{
     private int front;
     private int rear;
 
-    public ArrayDeque(){
+    public ArrayDeque() {
         size = 0;
         array = (T[]) new Object[DEFAULT_CAPACITY];
         front = 0;
@@ -16,10 +16,11 @@ public class ArrayDeque<T> implements Deque<T>{
     }
 
     @Override
-    public void addFirst(T item){
+    public void addFirst(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY)
+        if (size > DEFAULT_CAPACITY){
             resize(size * 2);
+        }
 
         if (size != 0){
             front = (front - 1 + array.length) % array.length;
@@ -29,10 +30,11 @@ public class ArrayDeque<T> implements Deque<T>{
     }
 
     @Override
-    public void addLast(T item){
+    public void addLast(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY)
+        if (size > DEFAULT_CAPACITY){
             resize(size * 2);
+        }
 
         array[rear] = item;
         rear = (rear + 1 + array.length) % array.length;
@@ -44,7 +46,7 @@ public class ArrayDeque<T> implements Deque<T>{
 //    }
 
     @Override
-    public int size(){
+    public int size() {
         return size;
     }
 
@@ -63,12 +65,13 @@ public class ArrayDeque<T> implements Deque<T>{
 //    }
 
     @Override
-    public void printDeque(){
+    public void printDeque() {
         if (!isEmpty()){
-            for (int i = front; i != rear; i = (i+1) % array.length) {
+            for (int i = front; i != rear; i = (i + 1) % array.length) {
                 System.out.print(array[i]);
-                if ((i+1) % array.length != rear)
+                if ((i + 1) % array.length != rear){
                     System.out.println(" -> ");
+                }
             }
         }else{
             System.out.println("队列为空");
@@ -76,9 +79,10 @@ public class ArrayDeque<T> implements Deque<T>{
     }
 
     @Override
-    public T removeFirst(){
-        if (isEmpty())
+    public T removeFirst() {
+        if (isEmpty()){
             return null;
+        }
 
         size--;
         T x = array[front];
@@ -88,9 +92,11 @@ public class ArrayDeque<T> implements Deque<T>{
     }
 
     @Override
-    public T removeLast(){
-        if (isEmpty())
+    public T removeLast() {
+        if (isEmpty()){
             return null;
+        }
+
         size--;
         T x = array[rear];
         array[rear] = null;
@@ -99,14 +105,13 @@ public class ArrayDeque<T> implements Deque<T>{
     }
 
     @Override
-    public T get(int index){
+    public T get(int index) {
         return array[index];
     }
 
-    public void resize(int capacity){
+    public void resize(int capacity) {
         T[] a1 = (T[]) new Object[capacity];
         System.arraycopy(array, 0, a1, 0, size);
         array = a1;
-
     }
 }
