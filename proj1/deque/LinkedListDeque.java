@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Deque<T>{
     private int size;
     private Node sentinel;
     private Node last;
@@ -24,6 +24,7 @@ public class LinkedListDeque<T> {
         size = 0;
     }
 
+    @Override
     public void addFirst(T item){
         size++;
 
@@ -41,6 +42,7 @@ public class LinkedListDeque<T> {
         first.prev = add;
     }
 
+    @Override
     public void addLast(T item){
         size++;
 
@@ -60,10 +62,12 @@ public class LinkedListDeque<T> {
         last = add;
     }
 
-    public boolean isEmpty(){
-        return size == 0;
-    }
+//    @Override
+//    public boolean isEmpty(){
+//        return size == 0;
+//    }
 
+    @Override
     public int size(){
         return size;
     }
@@ -83,6 +87,7 @@ public class LinkedListDeque<T> {
 //        return s + p.item;
 //    }
 
+    @Override
     public void printDeque(){
         Node p = sentinel.next;
         if (p.item == null)
@@ -95,6 +100,7 @@ public class LinkedListDeque<T> {
         System.out.println(p.item);
     }
 
+    @Override
     public T removeFirst(){
         if (isEmpty())
             return null;
@@ -114,6 +120,7 @@ public class LinkedListDeque<T> {
         return x;
     }
 
+    @Override
     public T removeLast(){
         if (isEmpty())
             return null;
@@ -130,6 +137,7 @@ public class LinkedListDeque<T> {
         return x;
     }
 
+    @Override
     public T get(int index){
         if (isEmpty())
             return null;
