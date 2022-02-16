@@ -6,7 +6,7 @@ import edu.princeton.cs.algs4.StdDraw;
 public class GuitarHero {
     public static final double CONCERT_A = 440.0;
     public static final String keyboard = "q2we4r5ty7u8i9op-[=zxdcfvgbnjmk,.;/' ";
-    public static GuitarString string = new GuitarString(CONCERT_A);
+    static GuitarString string = new GuitarString(CONCERT_A);
 
     public static void main(String[] args) {
         double[] guitar = new double[37];
@@ -16,7 +16,7 @@ public class GuitarHero {
             guitar[i] = CONCERT_A * Math.pow(2, (i - 24) / 12);
         }
 
-        while(true) {
+        while (true) {
             if (StdDraw.hasNextKeyTyped()) {
                 char key = StdDraw.nextKeyTyped();
                 int pos = keyboard.indexOf(key);

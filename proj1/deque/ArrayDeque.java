@@ -126,18 +126,18 @@ public class ArrayDeque<T> implements Deque<T> {
         return new ArrayIterator<T>();
     }
 
-    private class ArrayIterator<T>{
+    private class ArrayIterator<T> {
         private int wizPos;
 
-        public ArrayIterator(){
+        ArrayIterator() {
             wizPos = front;
         }
 
-        public boolean hasNext(){
+        public boolean hasNext() {
             return wizPos < rear;
         }
 
-        public T next(){
+        public T next() {
             T returnItem = (T) array[wizPos];
             wizPos++;
             return returnItem;
@@ -145,7 +145,7 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public boolean equals(Object other){
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
