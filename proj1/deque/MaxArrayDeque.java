@@ -27,8 +27,9 @@ public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
 
     public void addFirst(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY)
+        if (size > DEFAULT_CAPACITY) {
             resize(size * 2);
+        }
 
         if (size != 0){
             front = (front - 1 + array.length) % array.length;
@@ -39,8 +40,9 @@ public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
 
     public void addLast(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY)
+        if (size > DEFAULT_CAPACITY){
             resize(size * 2);
+        }
 
         array[rear] = item;
         rear = (rear + 1 + array.length) % array.length;
@@ -69,20 +71,22 @@ public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
 //    }
 
     public void printDeque() {
-        if (!isEmpty()){
-            for (int i = front; i != rear; i = (i+1) % array.length) {
+        if (!isEmpty()) {
+            for (int i = front; i != rear; i = (i + 1) % array.length) {
                 System.out.print(array[i]);
-                if ((i+1) % array.length != rear)
+                if ((i + 1) % array.length != rear) {
                     System.out.println(" -> ");
+                }
             }
-        }else{
+        } else {
             System.out.println("队列为空");
         }
     }
 
     public T removeFirst() {
-        if (isEmpty())
+        if (isEmpty()) {
             return null;
+        }
 
         size--;
         T x = array[front];
@@ -92,8 +96,10 @@ public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
     }
 
     public T removeLast() {
-        if (isEmpty())
+        if (isEmpty()) {
             return null;
+        }
+
         size--;
         T x = array[rear];
         array[rear] = null;
@@ -112,12 +118,13 @@ public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
     }
 
     public T max() {
-        if (array == null){
+        if (array == null) {
             return null;
         }
 
         T max = array[front];
-        for (int i = (front + 1 + array.length) % array.length; i < rear; i = (i + 1 + array.length) % array.length) {
+        int i = (front + 1 + array.length) % array.length;
+        for ( ; i < rear; i = (i + 1 + array.length) % array.length) {
             if (comparator.compare(max, array[i]) < 0) {
                 max = array[i];
             }
@@ -132,6 +139,6 @@ public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
 
     @Override
     public int compare(T o1, T o2) {
-        return array[(int)o1].compareTo(array[(int)o2]);
+        return array[(int) o1].compareTo(array[(int) o2]);
     }
 }
