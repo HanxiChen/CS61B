@@ -139,6 +139,6 @@ public class MaxArrayDeque<T extends Comparable<T>> implements Comparator<T> {
 
     @Override
     public int compare(T o1, T o2) {
-        return array[(int) o1].compareTo(array[(int) o2]);
+        return array[(Integer) o1].compareTo(array[(Integer) o2]);
     }
 }

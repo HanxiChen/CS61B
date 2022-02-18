@@ -36,6 +36,7 @@ public class ArrayDeque<T> implements Deque<T> {
         size++;
         if (size > DEFAULT_CAPACITY) {
             resize(size * 2);
+            rear = (rear - 1 + size) % size;
         }
 
         array[rear] = item;
@@ -52,19 +53,19 @@ public class ArrayDeque<T> implements Deque<T> {
         return size;
     }
 
-//    public String printDeque(){
-//        String s = "";
-//        if (!isEmpty()){
-//            for (int i = front; i != rear; i = (i+1) % array.length) {
-//                s = s + array[i];
-//                if ((i+1) % array.length != rear)
-//                    s = s + " -> ";
-//            }
-//        }else{
-//            s = "队列为空";
-//        }
-//        return s;
-//    }
+    public String printDequeString(){
+        String s = "";
+        if (!isEmpty()){
+            for (int i = front; i != rear; i = (i+1) % array.length) {
+                s = s + array[i];
+                if ((i+1) % array.length != rear)
+                    s = s + " -> ";
+            }
+        }else{
+            s = "队列为空";
+        }
+        return s;
+    }
 
     @Override
     public void printDeque() {
@@ -100,9 +101,9 @@ public class ArrayDeque<T> implements Deque<T> {
         }
 
         size--;
+        rear = (rear - 1 + array.length) % array.length;
         T x = array[rear];
         array[rear] = null;
-        rear = (rear - 1 + array.length) % array.length;
         return x;
     }
 
@@ -113,7 +114,7 @@ public class ArrayDeque<T> implements Deque<T> {
 
     private void resize(int capacity) {
         T[] a1 = (T[]) new Object[capacity];
-        System.arraycopy(array, 0, a1, 0, size);
+        System.arraycopy(array, 0, a1, 0, size - 1);
         array = a1;
     }
 
