@@ -1,5 +1,7 @@
 package deque;
 
+import java.util.Iterator;
+
 public class ArrayDeque<T> implements Deque<T> {
     private static final int DEFAULT_CAPACITY = 8;
 
@@ -126,7 +128,7 @@ public class ArrayDeque<T> implements Deque<T> {
         return new ArrayIterator<T>();
     }
 
-    private class ArrayIterator<T> {
+    private class ArrayIterator<T> implements Iterator<T> {
         private int wizPos;
 
         ArrayIterator() {

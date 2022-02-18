@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Comparator;
 
-public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
+public class MaxArrayDeque<T extends Comparable<T>> implements Comparator<T> {
     private static final int DEFAULT_CAPACITY = 8;
 
     private int size;

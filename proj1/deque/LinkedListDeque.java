@@ -1,5 +1,7 @@
 package deque;
 
+import java.util.Iterator;
+
 public class LinkedListDeque<T> implements Deque<T> {
     private int size;
     private Node sentinel;
@@ -158,7 +160,7 @@ public class LinkedListDeque<T> implements Deque<T> {
     public LinkedListIterator<T> iterator() {
         return new LinkedListIterator<T>();
     }
-    private class LinkedListIterator<T> {
+    private class LinkedListIterator<T> implements Iterator<T> {
         private Node p;
 
         LinkedListIterator() {
