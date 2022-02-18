@@ -34,7 +34,7 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public void addLast(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY) {
+        if (size > array.length) {
             resize(size * 2);
             rear = (rear - 1 + size) % size;
         }
@@ -87,6 +87,10 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
 
+        if ((size < array.length / 4) && (size > 4)) {
+            resize(size / 4);
+        }
+
         size--;
         T x = array[front];
         array[front] = null;
@@ -100,6 +104,10 @@ public class ArrayDeque<T> implements Deque<T> {
             return null;
         }
 
+        if ((size < array.length / 4) && (size > 4)) {
+            resize(size / 4);
+        }
+
         size--;
         rear = (rear - 1 + array.length) % array.length;
         T x = array[rear];
@@ -109,11 +117,16 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public T get(int index) {
-        return array[index];
+        return array[front + index];
     }
 
     private void resize(int capacity) {
+        if (capacity < size) {
+            size = capacity;
+        }
+
         T[] a1 = (T[]) new Object[capacity];
+
         System.arraycopy(array, 0, a1, 0, size - 1);
         array = a1;
     }
@@ -130,10 +143,14 @@ public class ArrayDeque<T> implements Deque<T> {
         }
 
         public boolean hasNext() {
-            return wizPos < rear;
+            return wizPos + 1 < rear;
         }
 
         public T next() {
+            if (!hasNext()) {
+                return null;
+            }
+
             T returnItem = (T) array[wizPos];
             wizPos++;
             return returnItem;
@@ -148,18 +165,19 @@ public class ArrayDeque<T> implements Deque<T> {
         if (other == null) {
             return false;
         }
-        if (other.getClass() != this.getClass()) {
-            return false;
-        }
-        ArrayDeque<T> o = (ArrayDeque<T>) other;
-        if (o.size() != this.size()) {
-            return false;
-        }
-        for (int i = front; i < rear; i = (i + 1 + array.length) % array.length) {
-            if (this.get(i) != o.get(i)) {
+
+        if (other instanceof Deque) {
+            Deque o = (Deque) other;
+            if (this.size != o.size()) {
                 return false;
             }
+            for (int i = front; i < rear; i = (i + 1 + array.length) % array.length) {
+                if (this.get(i) != o.get(i)) {
+                    return false;
+                }
+            }
         }
+
         return true;
     }
 }

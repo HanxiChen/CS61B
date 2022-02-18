@@ -146,10 +146,10 @@ public class LinkedListDeque<T> implements Deque<T> {
             return null;
         }
 
-        Node p = sentinel;
+        Node p = sentinel.next;
 
-        for (int i = 1; i <= index; i++) {
-            if (p.next != null) {
+        for (int i = 0; i <= index; i++) {
+            if (p.next != sentinel) {
                 p = p.next;
             }
         }
@@ -172,39 +172,35 @@ public class LinkedListDeque<T> implements Deque<T> {
         }
 
         public T next() {
+            if (!hasNext()) {
+                return null;
+            }
             T returnItem = (T) p.item;
             p = p.next;
             return returnItem;
         }
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (o == null) {
-            return false;
-        }
-        if (o instanceof LinkedListDeque) {
+        if (other == null) {
             return false;
         }
 
-        LinkedListDeque<T> other = (LinkedListDeque<T>) o;
-        if (this.size() != other.size()) {
-            return false;
-        }
-        Node p1 = this.sentinel.next;
-        Node p2 = other.sentinel.next;
-        for (int i = 0; i < size; i++) {
-            if (p1 != last && p2 != last) {
-                if (p1.item != p2.item) {
+        if (other instanceof Deque) {
+            Deque o = (Deque) other;
+            if (this.size != o.size()) {
+                return false;
+            }
+
+            for (int i = 0; i < size(); i++) {
+                if (this.get(i) != o.get(i)) {
                     return false;
                 }
             }
-            p1 = p1.next;
-            p2 = p2.next;
         }
-
         return true;
     }
 
