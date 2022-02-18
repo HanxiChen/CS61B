@@ -1,7 +1,5 @@
 package deque;
 
-import net.sf.saxon.functions.Minimax;
-
 import java.util.Comparator;
 
 public class MaxArrayDeque<T extends Comparable> implements Comparator<T> {
