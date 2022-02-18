@@ -146,7 +146,7 @@ public class LinkedListDeque<T> implements Deque<T> {
             return null;
         }
 
-        Node p = sentinel.next;
+        Node p = sentinel;
 
         for (int i = 0; i <= index; i++) {
             if (p.next != sentinel) {

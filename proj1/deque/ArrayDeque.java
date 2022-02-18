@@ -19,30 +19,64 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public void addFirst(T item) {
-        size++;
-        if (size > DEFAULT_CAPACITY) {
+        if (size >= array.length) {
             resize(size * 2);
+            rear = (rear + size) % (size + 1);
         }
-
+        size++;
         if (size != 0) {
             front = (front - 1 + array.length) % array.length;
         }
-
         array[front] = item;
     }
 
     @Override
     public void addLast(T item) {
-        size++;
-        if (size > array.length) {
+        if (size >= array.length) {
             resize(size * 2);
-            rear = (rear - 1 + size) % size;
+            rear = (rear + size) % (size + 1);
         }
-
+        size++;
         array[rear] = item;
         rear = (rear + 1 + array.length) % array.length;
     }
 
+    private void resize(int capacity) {
+        T[] a1 = (T[]) new Object[capacity];
+
+        System.arraycopy(array, 0, a1, 0, size);
+        array = a1;
+    }
+
+    @Override
+    public T removeFirst() {
+        if ((size < array.length / 4) && (size >= 4)) {
+            resize(array.length / 4);
+        }
+
+        size--;
+        T x = array[front];
+        array[front] = null;
+        front = (front + 1 + array.length) % array.length;
+        return x;
+    }
+
+    @Override
+    public T removeLast() {
+        if (isEmpty()) {
+            return null;
+        }
+
+        if ((size <= array.length / 4) && (size >= 4)) {
+            resize(array.length / 4);
+        }
+
+        size--;
+        rear = (rear - 1 + array.length) % array.length;
+        T x = array[rear];
+        array[rear] = null;
+        return x;
+    }
 //    @Override
 //    public boolean isEmpty(){
 //        return size == 0;
@@ -53,15 +87,16 @@ public class ArrayDeque<T> implements Deque<T> {
         return size;
     }
 
-    public String printDequeString(){
+    public String printDequeString() {
         String s = "";
-        if (!isEmpty()){
-            for (int i = front; i != rear; i = (i+1) % array.length) {
+        if (!isEmpty()) {
+            for (int i = front; i != rear; i = (i + 1) % array.length) {
                 s = s + array[i];
-                if ((i+1) % array.length != rear)
+                if ((i + 1) % array.length != rear) {
                     s = s + " -> ";
+                }
             }
-        }else{
+        } else {
             s = "队列为空";
         }
         return s;
@@ -82,54 +117,11 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public T removeFirst() {
-        if (isEmpty()) {
-            return null;
-        }
-
-        if ((size < array.length / 4) && (size > 4)) {
-            resize(size / 4);
-        }
-
-        size--;
-        T x = array[front];
-        array[front] = null;
-        front = (front + 1 + array.length) % array.length;
-        return x;
-    }
-
-    @Override
-    public T removeLast() {
-        if (isEmpty()) {
-            return null;
-        }
-
-        if ((size < array.length / 4) && (size > 4)) {
-            resize(size / 4);
-        }
-
-        size--;
-        rear = (rear - 1 + array.length) % array.length;
-        T x = array[rear];
-        array[rear] = null;
-        return x;
-    }
-
-    @Override
     public T get(int index) {
-        return array[front + index];
+        int pos = (front + index + array.length) % array.length;
+        return array[pos];
     }
 
-    private void resize(int capacity) {
-        if (capacity < size) {
-            size = capacity;
-        }
-
-        T[] a1 = (T[]) new Object[capacity];
-
-        System.arraycopy(array, 0, a1, 0, size - 1);
-        array = a1;
-    }
 
     public ArrayIterator<T> iterator() {
         return new ArrayIterator<T>();
@@ -171,7 +163,7 @@ public class ArrayDeque<T> implements Deque<T> {
             if (this.size != o.size()) {
                 return false;
             }
-            for (int i = front; i < rear; i = (i + 1 + array.length) % array.length) {
+            for (int i = 0; i < size(); i++) {
                 if (this.get(i) != o.get(i)) {
                     return false;
                 }

@@ -6,45 +6,12 @@ import static org.junit.Assert.*;
 
 /** Performs some basic linked list tests. */
 public class LinkedListDequeTest {
-
     @Test
-    public void addFirstTest(){
+    public void getTest(){
         LinkedListDeque<Integer> lld = new LinkedListDeque<>();
-        lld.addFirst(0);
-        lld.addFirst(3);
-        lld.addFirst(6);
-//        assertEquals("6 -> 3 -> 0", lld.printDeque());
-    }
-
-    @Test
-    public void addLastTest(){
-        LinkedListDeque<Integer> lld = new LinkedListDeque<>();
-        lld.addLast(0);
-        lld.addLast(3);
-        lld.addLast(6);
-//        assertEquals("0 -> 3 -> 6", lld.printDeque());
-    }
-
-    @Test
-    public void removeFirstTest(){
-        LinkedListDeque<Integer> lld = new LinkedListDeque<>();
-        lld.addFirst(0);
-//        lld.addFirst(3);
-//        lld.addFirst(6);
-        lld.removeFirst();
-//        assertEquals("", lld.printDeque());
-    }
-
-    @Test
-    public void removeLastTest(){
-        LinkedListDeque<Integer> lld = new LinkedListDeque<>();
-        lld.addFirst(0);
-        lld.addFirst(3);
-        lld.addFirst(6);
-        lld.removeLast();
-        lld.removeLast();
-        lld.removeLast();
-//        assertEquals("", lld.printDeque());
+        lld.addLast(1);
+        lld.addLast(2);
+        assertEquals((Integer) 2, lld.get(2));
     }
 
     @Test

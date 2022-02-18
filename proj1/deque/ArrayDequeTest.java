@@ -27,11 +27,11 @@ public class ArrayDequeTest {
     @Test
     public void resizeTest(){
         ArrayDeque<Integer> ad = new ArrayDeque<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 17; i++) {
             ad.addLast(i);
         }
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 16; i++) {
             ad.removeLast();
         }
 
@@ -42,31 +42,15 @@ public class ArrayDequeTest {
     public void getTest(){
         ArrayDeque<Integer> ad = new ArrayDeque<>();
         ad.addFirst(0);
-        ad.removeFirst();
-        ad.addLast(2);
-        ad.addLast(3);
-        ad.get(1);
-        ad.get(1);
-        ad.addLast(6);
-        ad.addFirst(7);
-        ad.addLast(8);
-        ad.removeLast();
-        ad.removeLast();
-        ad.addFirst(11);
-        ad.removeFirst();
-        ad.removeFirst();
-        ad.addFirst(14);
-        ad.removeFirst();
-        ad.removeFirst();
-        ad.get(0);
-
-        assertEquals((Integer)3, ad.get(0));
+        ad.addLast(1);
+        assertEquals((Integer)1, ad.get(1));
     }
 
     @Test
     public void equalsTest(){
         ArrayDeque<Integer> ad = new ArrayDeque<>();
         ad.addLast(1);
+        ad.addLast(2);
 
         LinkedListDeque<Integer> lld = new LinkedListDeque<Integer>();
         lld.addLast(1);
