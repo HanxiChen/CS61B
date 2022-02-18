@@ -31,7 +31,7 @@ public class MaxArrayDeque<T extends Comparable<T>> implements Comparator<T> {
             resize(size * 2);
         }
 
-        if (size != 0){
+        if (size != 0) {
             front = (front - 1 + array.length) % array.length;
         }
 
@@ -40,7 +40,7 @@ public class MaxArrayDeque<T extends Comparable<T>> implements Comparator<T> {
 
     public void addLast(T item) {
         size++;
-        if (size > DEFAULT_CAPACITY){
+        if (size > DEFAULT_CAPACITY) {
             resize(size * 2);
         }
 

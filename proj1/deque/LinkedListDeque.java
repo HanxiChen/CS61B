@@ -208,24 +208,11 @@ public class LinkedListDeque<T> implements Deque<T> {
         return true;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder returnSB = new StringBuilder("{");
-        Node p = sentinel.next;
-        for (; p != last; p = p.next) {
-            returnSB.append(p.item.toString());
-            returnSB.append(" -> ");
-        }
-        returnSB.append(p.item);
-        returnSB.append("}");
-        return returnSB.toString();
-    }
-
     //与给get相同，但要使用递归
     public T getRecursive(int index) {
         return getRecursive(index, sentinel.next);
     }
-    public T getRecursive(int index, Node n) {
+    private T getRecursive(int index, Node n) {
         if (index == 0) {
             return n.item;
         } else {
