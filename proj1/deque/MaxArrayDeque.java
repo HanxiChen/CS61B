@@ -3,7 +3,7 @@ package deque;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class MaxArrayDeque<T> implements Deque<T> {
+public class MaxArrayDeque<T> extends ArrayDeque<T> {
     private static final int DEFAULT_CAPACITY = 8;
 
     private int size;
@@ -12,12 +12,6 @@ public class MaxArrayDeque<T> implements Deque<T> {
     private int rear;           //当前数组最后一个
     private Comparator<T> comparator;
 
-    public MaxArrayDeque() {
-        size = 0;
-        array = (T[]) new Object[DEFAULT_CAPACITY];
-        front = 0;
-        rear = 0;
-    }
     public MaxArrayDeque(Comparator<T> c) {
         size = 0;
         array = (T[]) new Object[DEFAULT_CAPACITY];
@@ -25,6 +19,7 @@ public class MaxArrayDeque<T> implements Deque<T> {
         rear = 0;
         comparator = c;
     }
+
     @Override
     //如果size 和 数组长度相等，扩大数组
     //首先size+1，赋值，front指针向前移动
