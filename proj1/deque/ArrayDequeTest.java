@@ -76,9 +76,13 @@ public class ArrayDequeTest {
     @Test
     public void equalsTest(){
         ArrayDeque<Integer> ad1 = new ArrayDeque<>();
-
+        ad1.addLast(1);
+        ad1.addLast(1);
+        ad1.addLast(2);
         ArrayDeque<Integer> ad2 = new ArrayDeque<>();
-
+        ad2.addLast(1);
+        ad2.addLast(1);
+        ad2.addLast(2);
         LinkedListDeque<Integer> lld = new LinkedListDeque<Integer>();
 
         assertTrue(ad1.equals(ad2));
@@ -87,9 +91,9 @@ public class ArrayDequeTest {
     @Test
     public void IteratorTest() {
         ArrayDeque<Integer> ad = new ArrayDeque<>();
-//        ad.addFirst(1);
-//        ad.addLast(2);
-//        ad.addLast(3);
+        ad.addFirst(3);
+        ad.addFirst(2);
+
         Iterator<Integer> c = ad.iterator();
         int i = 0;
         while(c.hasNext()) {

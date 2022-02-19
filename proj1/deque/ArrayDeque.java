@@ -122,11 +122,11 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            private int wizPos;
-
+            private int wizPos = front;
+            private int s;
             @Override
             public boolean hasNext() {
-                return wizPos < size;
+                return s < size;
             }
 
             @Override
@@ -137,6 +137,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
                 T returnItem = (T) array[wizPos];
                 wizPos = (wizPos + 1 + array.length) % array.length;
+                s++;
                 return returnItem;
             }
         };
