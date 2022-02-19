@@ -127,7 +127,6 @@ public class LinkedListDeque<T> implements Deque<T> {
         return p.item;
     }
 
-    @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private Node p = sentinel.next;

@@ -120,7 +120,6 @@ public class ArrayDeque<T> implements Deque<T> {
         }
     }
 
-    @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private int wizPos;
