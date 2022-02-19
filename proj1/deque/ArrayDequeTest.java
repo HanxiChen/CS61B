@@ -1,7 +1,8 @@
 package deque;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Test;
+
+import java.util.Iterator;
 
 import static org.junit.Assert.*;
 
@@ -9,11 +10,12 @@ public class ArrayDequeTest {
     @Test
     public void addTest(){
         ArrayDeque<Integer> ad = new ArrayDeque<>();
-        ad.isEmpty();
+        ad.addLast(0);
         ad.addFirst(1);
         ad.removeLast();
-        ad.addFirst(3);
-        assertEquals((Integer) 3, ad.removeLast());
+        ad.removeLast();
+        ad.addFirst(4);
+        assertEquals((Integer) 4, ad.removeLast());
     }
 
     @Test
@@ -22,7 +24,8 @@ public class ArrayDequeTest {
         ad.removeLast();
         ad.removeLast();
         ad.removeLast();
-
+        assertNotNull(ad.removeFirst());
+        assertNotNull(ad.removeLast());
         assertEquals(0, ad.size());
     }
 
@@ -72,14 +75,26 @@ public class ArrayDequeTest {
 
     @Test
     public void equalsTest(){
-        ArrayDeque<Integer> ad = new ArrayDeque<>();
-        ad.addLast(1);
-        ad.addLast(2);
+        ArrayDeque<Integer> ad1 = new ArrayDeque<>();
+        ad1.addLast(1);
+        ArrayDeque<Integer> ad2 = new ArrayDeque<>();
 
         LinkedListDeque<Integer> lld = new LinkedListDeque<Integer>();
-        lld.addLast(1);
-        lld.addLast(2);
 
-        assertTrue(ad.equals(lld));
+        assertTrue(ad1.equals(ad2));
+    }
+
+    @Test
+    public void IteratorTest() {
+        ArrayDeque<Integer> ad = new ArrayDeque<>();
+        ad.addFirst(1);
+        ad.addLast(2);
+        ad.addLast(3);
+        Iterator<Integer> c = ad.iterator();
+        int i = 0;
+        while(c.hasNext()) {
+            assertEquals(ad.get(i), c.next());
+            i++;
+        }
     }
 }

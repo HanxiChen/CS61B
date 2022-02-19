@@ -3,7 +3,7 @@ package deque;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class MaxArrayDeque<T extends Comparable<T>> implements Deque<T> {
+public class MaxArrayDeque<T extends Comparable<? super T>> implements Deque<T> {
     private static final int DEFAULT_CAPACITY = 8;
 
     private int size;

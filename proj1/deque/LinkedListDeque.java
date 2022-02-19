@@ -127,6 +127,17 @@ public class LinkedListDeque<T> implements Deque<T> {
         return p.item;
     }
 
+    //与给get相同，但要使用递归
+    public T getRecursive(int index){
+        return getRecursive(index, sentinel.next);
+    }
+    public T getRecursive(int index, Node n){
+        if (index == 0)
+            return n.item;
+        else
+            return getRecursive(--index, n.next);
+    }
+
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private Node p = sentinel.next;

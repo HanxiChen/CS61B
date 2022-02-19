@@ -1,6 +1,7 @@
 package deque;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class ArrayDeque<T> implements Deque<T> {
     private static final int DEFAULT_CAPACITY = 8;
@@ -27,7 +28,7 @@ public class ArrayDeque<T> implements Deque<T> {
         }
 
         //插入第一个数据的判断
-        if (!(front == 0 && size == 0)) {
+        if (!(front == rear && size == 0)) {
             front = (front - 1 + array.length) % array.length;
         }
         array[front] = item;
@@ -41,7 +42,7 @@ public class ArrayDeque<T> implements Deque<T> {
         }
 
         //插入第一个数据的判断
-        if (!(rear == 0 && size == 0)) {
+        if (!(rear == front && size == 0)) {
             rear = (rear + 1 + array.length) % array.length;
         }
 
@@ -126,8 +127,7 @@ public class ArrayDeque<T> implements Deque<T> {
 
             @Override
             public boolean hasNext() {
-                int pos = (wizPos + 1 + array.length) % array.length;
-                return pos < rear;
+                return wizPos < size;
             }
 
             @Override
@@ -143,27 +143,26 @@ public class ArrayDeque<T> implements Deque<T> {
         };
     }
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (other == null) {
+
+        if (!(o instanceof Deque)) {
             return false;
         }
 
-        if (other instanceof Deque) {
-            Deque o = (Deque) other;
-            if (this.size != o.size()) {
+        Iterator<T> i1 = iterator();
+        Iterator i2 = ((Deque) o).iterator();
+        while (i1.hasNext() && i2.hasNext()) {
+            T o1 = i1.next();
+            T o2 = (T) i2.next();
+
+            if (!(Objects.equals(o1, o2))) {
                 return false;
             }
-            for (int i = 0; i < size(); i++) {
-                if (this.get(i) != o.get(i)) {
-                    return false;
-                }
-            }
-            return true;
         }
-        return false;
+        return !(i1.hasNext() || i2.hasNext());
     }
 
 }
