@@ -59,6 +59,9 @@ public class MaxArrayDeque<T extends Comparable<T>> implements Deque<T> {
 
     @Override
     public T removeFirst() {
+        if (isEmpty()) {
+            return null;
+        }
         if (size < array.length / 4 && size > 4) {
             resize(array.length / 4);
         }
@@ -74,14 +77,18 @@ public class MaxArrayDeque<T extends Comparable<T>> implements Deque<T> {
 
     @Override
     public T removeLast() {
+        if (isEmpty()) {
+            return null;
+        }
         if (size < array.length / 4 && size > 4) {
             resize(array.length / 4);
         }
 
-        size--;
         T x = array[rear];
         array[rear] = null;
-        rear = (rear - 1 + array.length) % array.length;
+        if (!(--size == 0)) {
+            rear = (rear - 1 + array.length) % array.length;
+        }
         return x;
     }
 

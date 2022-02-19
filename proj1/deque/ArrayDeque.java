@@ -51,6 +51,9 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public T removeFirst() {
+        if (isEmpty()) {
+            return null;
+        }
         if (size < array.length / 4 && size > 4) {
             resize(array.length / 4);
         }
@@ -66,14 +69,18 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public T removeLast() {
+        if (isEmpty()) {
+            return null;
+        }
         if (size < array.length / 4 && size > 4) {
             resize(array.length / 4);
         }
 
-        size--;
         T x = array[rear];
         array[rear] = null;
-        rear = (rear - 1 + array.length) % array.length;
+        if (!(--size == 0)) {
+            rear = (rear - 1 + array.length) % array.length;
+        }
         return x;
     }
 
@@ -83,7 +90,7 @@ public class ArrayDeque<T> implements Deque<T> {
         return array[pos];
     }
 
-    public void resize(int capacity) {
+    private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
 
         int pos = front;
@@ -102,11 +109,6 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
     public void printDeque() {
         if (!isEmpty()) {
             int pos = front;
@@ -118,13 +120,15 @@ public class ArrayDeque<T> implements Deque<T> {
         }
     }
 
+    @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private int wizPos;
 
             @Override
             public boolean hasNext() {
-                return wizPos + 1 < rear;
+                int pos = (wizPos + 1 + array.length) % array.length;
+                return pos < rear;
             }
 
             @Override
@@ -134,7 +138,7 @@ public class ArrayDeque<T> implements Deque<T> {
                 }
 
                 T returnItem = (T) array[wizPos];
-                wizPos++;
+                wizPos = (wizPos + 1 + array.length) % array.length;
                 return returnItem;
             }
         };

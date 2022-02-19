@@ -32,18 +32,13 @@ public class GuitarString {
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
-        // Dequeue everything in buffer, and replace with random numbers
-        //       between -0.5 and 0.5. You can get such a number by using:
-        //       double r = Math.random() - 0.5;
         for (int i = 0; i < capacity; i++) {
             double r = Math.random() - 0.5;
-            buffer.removeFirst();
             buffer.addFirst(r);
+            buffer.removeLast();
         }
-        //       Make sure that your random numbers are different from each
-        //       other. This does not mean that you need to check that the numbers
-        //       are different from each other. It means you should repeatedly call
-        //       Math.random() - 0.5 to generate new random numbers for each array index.
+
+        buffer.printDeque();
     }
 
     /* Advance the simulation one time step by performing one iteration of
@@ -59,7 +54,7 @@ public class GuitarString {
 //            buffer.addLast((d1 + d2) / 2 * DECAY);
 //        }
         double d1 = buffer.removeFirst();
-        double d2 = buffer.get(1);
+        double d2 = buffer.get(0);
         buffer.addLast((d1 + d2) / 2 * DECAY);
     }
 
