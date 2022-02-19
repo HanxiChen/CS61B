@@ -47,30 +47,14 @@ public class ArrayDequeTest {
     public void getTest(){
         ArrayDeque<Integer> ad = new ArrayDeque<>();
         ad.addLast(0);
-        ad.removeFirst() ;
-        ad.addFirst(2);
-        ad.addLast(3);
-        ad.removeLast()      ;
-        ad.addFirst(5);
-        ad.addFirst(6);
+        ad.addLast(1);
+        ad.removeFirst()  ;
+        ad.removeFirst()  ;
+        ad.addFirst(4);
+        ad.get(0);
+        ad.addLast(6);
         ad.addLast(7);
-        ad.removeLast()    ;
-        ad.get(0)     ;
-        ad.addFirst(10);
-        ad.addFirst(11);
-        ad.addLast(12);
-        ad.removeFirst()    ;
-        ad.get(4)      ;
-        ad.addLast(15);
-        ad.get(3)      ;
-        ad.addFirst(17);
-        ad.addLast(18);
-        ad.addFirst(19);
-        ad.removeFirst()   ;
-        ad.removeFirst();
-        ad.addFirst(22);
-
-        assertEquals((Integer) 18, ad.removeLast());
+        assertEquals((Integer) 7, ad.get(2));
     }
 
     @Test

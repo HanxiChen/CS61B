@@ -5,10 +5,10 @@ import java.util.Iterator;
 public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private static final int DEFAULT_CAPACITY = 8;
 
-    private int size;
-    private T[] array;
-    private int front;          //当前数组第一个
-    private int rear;           //当前数组最后一个
+    protected int size;
+    protected T[] array;
+    protected int front;          //当前数组第一个
+    protected int rear;           //当前数组最后一个
 
     public ArrayDeque() {
         size = 0;
