@@ -2,7 +2,6 @@ package deque;
 
 import org.junit.Test;
 
-import java.net.Inet4Address;
 import java.util.Comparator;
 
 import static org.junit.Assert.*;
@@ -37,13 +36,13 @@ public class MaxArrayDequeTest {
             }
         };
         MaxArrayDeque<Integer> mad = new MaxArrayDeque<>(comparator);
-//        mad.addLast(1);
-//        mad.addLast(2);
-//        mad.addLast(3);
-//        mad.addLast(5);
-//        mad.addLast(4);
-//
-//        assertEquals((Integer) 5, mad.max(comparator));
-        assertEquals( null, mad.max(comparator));
+        mad.addLast(-2);
+        mad.addLast(0);
+        mad.addLast(-10);
+        mad.addLast(-5);
+        mad.addLast(-6);
+
+        assertEquals((Integer) 0, mad.max(comparator));
+
     }
 }
