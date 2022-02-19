@@ -59,14 +59,14 @@ public class ArrayDequeTest {
 
     @Test
     public void equalsTest(){
-        ArrayDeque<Integer> ad1 = new ArrayDeque<>();
-        ad1.addLast(1);
-        ad1.addLast(1);
-        ad1.addLast(2);
-        ArrayDeque<Integer> ad2 = new ArrayDeque<>();
-        ad2.addLast(1);
-        ad2.addLast(1);
-        ad2.addLast(2);
+        ArrayDeque<String> ad1 = new ArrayDeque<>();
+        ad1.addLast("1");
+        ad1.addLast("2");
+        ad1.addLast("3");
+        ArrayDeque<String> ad2 = new ArrayDeque<>();
+        ad2.addLast("1");
+        ad2.addLast("2");
+        ad2.addLast("3");
         LinkedListDeque<Integer> lld = new LinkedListDeque<Integer>();
 
         assertTrue(ad1.equals(ad2));
