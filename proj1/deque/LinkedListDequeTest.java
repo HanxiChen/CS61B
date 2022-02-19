@@ -2,6 +2,8 @@ package deque;
 
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
 
 
@@ -14,6 +16,7 @@ public class LinkedListDequeTest {
         lld.addFirst(1);
         assertEquals((Integer) 1, lld.removeLast());
     }
+
     @Test
     public void getTest(){
         LinkedListDeque<Integer> lld = new LinkedListDeque<>();
@@ -22,6 +25,21 @@ public class LinkedListDequeTest {
         assertEquals((Integer) 2, lld.get(2));
     }
 
+    @Test
+    public void IteratorTest() {
+        LinkedListDeque<Integer> lld = new LinkedListDeque<>();
+        lld.addLast(1);
+        lld.addLast(2);
+        lld.addLast(3);
+
+        Iterator<Integer> c = lld.iterator();
+        Integer t = c.next();
+        int i = 0;
+        while(c.hasNext()) {
+            assertEquals(lld.get(i), c.next());
+            i++;
+        }
+    }
     @Test
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.

@@ -87,9 +87,9 @@ public class ArrayDequeTest {
     @Test
     public void IteratorTest() {
         ArrayDeque<Integer> ad = new ArrayDeque<>();
-        ad.addFirst(1);
-        ad.addLast(2);
-        ad.addLast(3);
+//        ad.addFirst(1);
+//        ad.addLast(2);
+//        ad.addLast(3);
         Iterator<Integer> c = ad.iterator();
         int i = 0;
         while(c.hasNext()) {
