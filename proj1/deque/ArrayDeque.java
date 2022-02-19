@@ -7,8 +7,8 @@ public class ArrayDeque<T> implements Deque<T> {
 
     private int size;
     private T[] array;
-    private int front;
-    private int rear;
+    private int front;          //当前数组第一个
+    private int rear;           //当前数组最后一个
 
     public ArrayDeque() {
         size = 0;
@@ -18,102 +18,63 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
+    //如果size 和 数组长度相等，扩大数组
+    //首先size+1，赋值，front指针向前移动
+    //如果front向前 和 rear向后重合后，调整后面数组的位置
     public void addFirst(T item) {
-        if (size >= array.length) {
+        if (size == array.length) {
             resize(size * 2);
-            rear = (rear + size) % (size + 1);
         }
-        size++;
-        if (size != 0) {
+
+        //插入第一个数据的判断
+        if (!(front == 0 && size == 0)) {
             front = (front - 1 + array.length) % array.length;
         }
         array[front] = item;
+        size++;
     }
 
     @Override
     public void addLast(T item) {
-        if (size >= array.length) {
+        if (size == array.length) {
             resize(size * 2);
-            rear = (rear + size) % (size + 1);
         }
-        size++;
+
+        //插入第一个数据的判断
+        if (!(rear == 0 && size == 0)) {
+            rear = (rear + 1 + array.length) % array.length;
+        }
+
         array[rear] = item;
-        rear = (rear + 1 + array.length) % array.length;
-    }
-
-    private void resize(int capacity) {
-        T[] a1 = (T[]) new Object[capacity];
-
-        System.arraycopy(array, 0, a1, 0, size);
-        array = a1;
+        size++;
     }
 
     @Override
     public T removeFirst() {
-        if ((size < array.length / 4) && (size >= 4)) {
+        if (size < array.length / 4 && size > 4) {
             resize(array.length / 4);
         }
 
-        size--;
         T x = array[front];
         array[front] = null;
-        front = (front + 1 + array.length) % array.length;
+        if (!(--size == 0)) {
+            front = (front + 1 + array.length) % array.length;
+        }
+
         return x;
     }
 
     @Override
     public T removeLast() {
-        if (isEmpty()) {
-            return null;
-        }
-
-        if ((size <= array.length / 4) && (size >= 4)) {
+        if (size < array.length / 4 && size > 4) {
             resize(array.length / 4);
         }
 
         size--;
-        rear = (rear - 1 + array.length) % array.length;
         T x = array[rear];
         array[rear] = null;
+        rear = (rear - 1 + array.length) % array.length;
         return x;
-    }
-//    @Override
-//    public boolean isEmpty(){
-//        return size == 0;
-//    }
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    public String printDequeString() {
-        String s = "";
-        if (!isEmpty()) {
-            for (int i = front; i != rear; i = (i + 1) % array.length) {
-                s = s + array[i];
-                if ((i + 1) % array.length != rear) {
-                    s = s + " -> ";
-                }
-            }
-        } else {
-            s = "队列为空";
-        }
-        return s;
-    }
-
-    @Override
-    public void printDeque() {
-        if (!isEmpty()) {
-            for (int i = front; i != rear; i = (i + 1) % array.length) {
-                System.out.print(array[i]);
-                if ((i + 1) % array.length != rear) {
-                    System.out.println(" -> ");
-                }
-            }
-        } else {
-            System.out.println("队列为空");
-        }
     }
 
     @Override
@@ -122,33 +83,62 @@ public class ArrayDeque<T> implements Deque<T> {
         return array[pos];
     }
 
+    public void resize(int capacity) {
+        T[] a = (T[]) new Object[capacity];
 
-    public ArrayIterator<T> iterator() {
-        return new ArrayIterator<T>();
+        int pos = front;
+        for (int i = 0; i < size; i++) {
+            a[i] = array[pos];
+            pos = (pos + 1 + array.length) % array.length;
+        }
+        array = a;
+        front = 0;
+        rear = size - 1;
     }
 
-    private class ArrayIterator<T> implements Iterator<T> {
-        private int wizPos;
+    @Override
+    public int size() {
+        return size;
+    }
 
-        ArrayIterator() {
-            wizPos = front;
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public void printDeque() {
+        if (!isEmpty()) {
+            int pos = front;
+            for (int i = 0; i < size - 1; i++) {
+                System.out.print(array[pos] + " ");
+                pos = (pos + 1 + array.length) % array.length;
+            }
+            System.out.println();
         }
+    }
 
-        public boolean hasNext() {
-            return wizPos + 1 < rear;
-        }
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private int wizPos;
 
-        public T next() {
-            if (!hasNext()) {
-                return null;
+            @Override
+            public boolean hasNext() {
+                return wizPos + 1 < rear;
             }
 
-            T returnItem = (T) array[wizPos];
-            wizPos++;
-            return returnItem;
-        }
-    }
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    return null;
+                }
 
+                T returnItem = (T) array[wizPos];
+                wizPos++;
+                return returnItem;
+            }
+        };
+    }
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -168,8 +158,9 @@ public class ArrayDeque<T> implements Deque<T> {
                     return false;
                 }
             }
+            return true;
         }
-
-        return true;
+        return false;
     }
+
 }

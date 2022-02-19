@@ -1,6 +1,7 @@
 package deque;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 
@@ -129,15 +130,15 @@ public class LinkedListDequeTest {
         System.out.println("Make sure to uncomment the lines below (and delete this print statement).");
 
         LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 10; i++) {
             lld1.addLast(i);
         }
 
-        for (double i = 0; i < 500000; i++) {
+        for (double i = 0; i < 5; i++) {
             assertEquals("Should have the same value", i, (double) lld1.removeFirst(), 0.0);
         }
 
-        for (double i = 999999; i > 500000; i--) {
+        for (double i = 9; i > 5; i--) {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
         }
 
