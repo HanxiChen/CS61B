@@ -76,7 +76,7 @@ public class ArrayDequeTest {
     @Test
     public void equalsTest(){
         ArrayDeque<Integer> ad1 = new ArrayDeque<>();
-        ad1.addLast(1);
+
         ArrayDeque<Integer> ad2 = new ArrayDeque<>();
 
         LinkedListDeque<Integer> lld = new LinkedListDeque<Integer>();

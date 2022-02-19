@@ -1,7 +1,6 @@
 package deque;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 public class ArrayDeque<T> implements Deque<T> {
     private static final int DEFAULT_CAPACITY = 8;
@@ -143,26 +142,27 @@ public class ArrayDeque<T> implements Deque<T> {
         };
     }
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-
-        if (!(o instanceof Deque)) {
+        if (other == null) {
             return false;
         }
 
-        Iterator<T> i1 = iterator();
-        Iterator i2 = ((Deque) o).iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            T o1 = i1.next();
-            T o2 = (T) i2.next();
-
-            if (!(Objects.equals(o1, o2))) {
+        if (other instanceof Deque) {
+            Deque o = (Deque) other;
+            if (this.size != o.size()) {
                 return false;
             }
+            for (int i = 0; i < size(); i++) {
+                if (this.get(i) != o.get(i)) {
+                    return false;
+                }
+            }
+            return true;
         }
-        return !(i1.hasNext() || i2.hasNext());
+        return false;
     }
 
 }
