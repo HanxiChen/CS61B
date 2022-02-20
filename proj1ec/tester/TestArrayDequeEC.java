@@ -10,50 +10,12 @@ import java.util.Random;
 import java.util.StringJoiner;
 
 public class TestArrayDequeEC {
-    @Test
-    public void test1() {
-        StudentArrayDeque<Integer> student = new StudentArrayDeque<>();
-        ArrayDequeSolution<Integer> ad = new ArrayDequeSolution<>();
-
-        Integer expected = 0;
-        Integer actual = 0;
-
-        int N = 5000;
-        for (int i = 0; i < N; i++) {
-            int operationNumber = StdRandom.uniform(0, 4);
-            int randVal = StdRandom.uniform(0, 100);
-
-            if (operationNumber == 0) {
-                student.addFirst(randVal);
-                ad.addFirst(randVal);
-                assertEquals("\naddFirst(" + randVal + ")", ad.size(), student.size());
-            } else if (operationNumber == 1) {
-                student.addLast(randVal);
-                ad.addLast(randVal);
-                assertEquals("\naddLast(" + randVal + ")", ad.size(), student.size());
-            } else if (operationNumber == 2) {
-                if (student.size() == 0) {
-                    continue;
-                }
-                actual = student.removeFirst();
-                expected = ad.removeFirst();
-                assertEquals("\nremoveFirst()", expected, actual);
-            } else {
-                if (student.size() == 0) {
-                    continue;
-                }
-                actual = student.removeLast();
-                expected = ad.removeLast();
-                assertEquals("\nremoveLast()", expected, actual);
-            }
-        }
-    }
-
     ArrayDequeSolution<Integer> solution = new ArrayDequeSolution<>();
     StudentArrayDeque<Integer> student = new StudentArrayDeque<>();
     Random random = new Random();
     StringJoiner stackTrace = new StringJoiner("");
     private final int iterations = 100000;
+
     @Test
     public void randomlyCompareStudentArrayDequeToSolution() {
         double variate;
