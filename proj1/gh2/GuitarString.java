@@ -37,8 +37,6 @@ public class GuitarString {
             buffer.addFirst(r);
             buffer.removeLast();
         }
-
-        buffer.printDeque();
     }
 
     /* Advance the simulation one time step by performing one iteration of
