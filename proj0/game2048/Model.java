@@ -265,4 +265,5 @@ public class Model extends Observable {
     public int hashCode() {
         return toString().hashCode();
     }
+
 }
