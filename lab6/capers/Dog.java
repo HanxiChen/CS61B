@@ -67,6 +67,7 @@ public class Dog implements Serializable { // TODO
             e.printStackTrace();
         }
         Utils.writeContents(file, this.name, "\t" + this.breed + "\t", Integer.toString(this.age));
+
     }
 
     @Override
