@@ -39,8 +39,8 @@ public class Dog implements Serializable {
      * @return Dog read from file
      */
     public static Dog fromFile(String name) {
-
-        return Utils.readObject(DOG_FOLDER, Dog.class);
+        File file = Utils.join(DOG_FOLDER, name + ".txt");
+        return Utils.readObject(file, Dog.class);
     }
 
     /**
@@ -56,7 +56,6 @@ public class Dog implements Serializable {
      * Saves a dog to a file for future use.
      */
     public void saveDog() {
-
         File file = Utils.join(DOG_FOLDER, this.name + ".txt");
         if (file.exists()) {
             file.delete();
@@ -66,8 +65,9 @@ public class Dog implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Utils.writeContents(file, this.name, "\t" + this.breed + "\t", Integer.toString(this.age));
 
+        Dog dog = new Dog(this.name, this.breed, this.age);
+        Utils.writeObject(file, dog);
     }
 
     @Override

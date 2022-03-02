@@ -59,8 +59,8 @@ public class Main {
             break;
         case "birthday":
             validateNumArgs("birthday", args, 2);
-
             Dog.fromFile(args[1]).haveBirthday();
+
             break;
         default:
             exitWithError(String.format("Unknown command: %s", args[0]));
