@@ -11,7 +11,7 @@ import static capers.Utils.*;
 public class Dog implements Serializable { // TODO
 
     /** Folder that dogs live in. */
-    static final File DOG_FOLDER = Utils.join(".capers", "dogs"); // TODO (hint: look at the `join` function in Utils)
+    static final File DOG_FOLDER = Utils.join("./capers", "dogs"); // TODO (hint: look at the `join` function in Utils)
 
     /** Age of dog. */
     private int age;
@@ -57,7 +57,7 @@ public class Dog implements Serializable { // TODO
      */
     public void saveDog() {
         // TODO (hint: don't forget dog names are unique)
-        File file = new File("capers/dogs/" + this.name + ".txt");
+        File file = Utils.join(DOG_FOLDER, this.name + ".txt");
         if (file.exists()) {
             file.delete();
         }
