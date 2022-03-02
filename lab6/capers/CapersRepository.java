@@ -11,14 +11,14 @@ import java.io.IOException;
  *    - dogs/ -- folder containing all of the persistent data for dogs
  *    - story -- file containing the current story
  *
- * TODO: change the above structure if you do something different.
+ *
  */
 public class CapersRepository {
     /** Current Working Directory. */
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = Utils.join(CWD, "capers"); // TODO Hint: look at the `join`
+    static final File CAPERS_FOLDER = Utils.join(CWD, "capers");
     // function in Utils
 
     /**
@@ -49,7 +49,7 @@ public class CapersRepository {
      * @param text String of the text to be appended to the story
      */
     public static void writeStory(String text) {
-        // TODO
+
         File file = Utils.join(CAPERS_FOLDER, "story.txt");
         String s = Utils.readContentsAsString(file);
         Utils.writeContents(file, s + text + "\n");
@@ -63,7 +63,7 @@ public class CapersRepository {
      * Also prints out the dog's information using toString().
      */
     public static void makeDog(String name, String breed, int age) {
-        // TODO
+
         Dog dog = new Dog(name, breed, age);
         System.out.println(dog.toString());
     }
@@ -75,7 +75,7 @@ public class CapersRepository {
      * @param name String name of the Dog whose birthday we're celebrating.
      */
     public static void celebrateBirthday(String name) {
-        // TODO
+
         Dog dog = Dog.fromFile(name);
         dog.haveBirthday();
     }
