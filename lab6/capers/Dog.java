@@ -9,9 +9,9 @@ import static capers.Utils.*;
  * @author HANXICHEN
 */
 public class Dog implements Serializable { // TODO
-
+    static final File CWD = new File(System.getProperty("user.dir"));
     /** Folder that dogs live in. */
-    static final File DOG_FOLDER = Utils.join("./capers", "dogs"); // TODO (hint: look at the `join` function in Utils)
+    static final File DOG_FOLDER = Utils.join(CWD, "capers", "dogs"); // TODO (hint: look at the `join` function in Utils)
 
     /** Age of dog. */
     private int age;
