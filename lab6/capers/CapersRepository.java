@@ -33,7 +33,7 @@ public class CapersRepository {
     public static void setupPersistence() {
         // TODO
         File f1 = Utils.join(CAPERS_FOLDER, "dogs");
-        boolean f = f1.mkdir();
+        boolean f = f1.mkdirs();
 
         File f2 = Utils.join(CAPERS_FOLDER, "story.txt");
         try {
