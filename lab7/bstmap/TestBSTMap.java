@@ -5,7 +5,17 @@ import org.junit.Test;
 
 /** Tests by Brendan Hu, Spring 2015, revised for 2016 by Josh Hug */
 public class TestBSTMap {
-
+    @Test
+    public void addTest() {
+        BSTMap<Integer, Integer> tree = new BSTMap<>();
+        tree.put(4, 4);
+        tree.put(3, 3);
+        tree.put(1, 1);
+        tree.put(2, 2);
+        tree.put(6, 6);
+        tree.put(5, 5);
+        tree.put(7, 7);
+    }
   	@Test
     public void sanityGenericsTest() {
     	try {
@@ -22,16 +32,16 @@ public class TestBSTMap {
     @Test
     public void sanityClearTest() {
     	BSTMap<String, Integer> b = new BSTMap<String, Integer>();
-        for (int i = 0; i < 455; i++) {
+        for (int i = 0; i < 5; i++) {
             b.put("hi" + i, 1+i);
             //make sure put is working via containsKey and get
             assertTrue( null != b.get("hi" + i) && (b.get("hi"+i).equals(1+i))
                         && b.containsKey("hi" + i));
         }
-        assertEquals(455, b.size());
+        assertEquals(5, b.size());
         b.clear();
         assertEquals(0, b.size());
-        for (int i = 0; i < 455; i++) {
+        for (int i = 0; i < 5; i++) {
             assertTrue(null == b.get("hi" + i) && !b.containsKey("hi" + i));
         }
     }
