@@ -150,7 +150,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
         if (containsKey(key)) {
             for (Node node: c) {
-                if (node.key == key) {
+                if (node.key.equals(key)) {
                     node.value = value;
                 }
             }
