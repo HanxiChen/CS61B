@@ -24,6 +24,24 @@ import java.util.List;
  * Give this file a good read as it provides several useful utility functions
  * to save you some time.
  *
+ * Methods:
+ * String sha1(Object... vals) 与 String sha1(List<Object> vals):
+ *      sha1加密哈希函数, 计算 commit 和 blob 对象的 hash值
+ * boolean restrictedDelete(File file) 与 boolean restrictedDelete(String file):
+ *      删除一个存在的文件,并不是删除一个文件夹
+ * byte[] readContents(File file) 与 String readContentsAsString(File file):
+ *      将一个file读成一个 字符数组 和 字符串
+ * void writeContents(File file, Object... contents) 与 void writeObject(File file, Serializable obj):
+ *      将内容写入文件file中
+ * <T extends Serializable> T readObject(File file, Class<T> expectedClass)
+ *      将该文件读成 T类型, 然后将它转成目标类
+ * List<String> plainFilenamesIn(File dir) 与 List<String> plainFilenamesIn(String dir)
+ *      返回dir中所有的文件名
+ * File join(String first, String... others) 与 File join(File first, String... others):
+ *      字符串拼接,返回file类型
+ * byte[] serialize(Serializable obj):
+ *      序列化,返回一个 byte[]
+ *
  *  @author P. N. Hilfinger
  */
 class Utils {
@@ -169,8 +187,8 @@ class Utils {
         };
 
     /** Returns a list of the names of all plain files in the directory DIR, in
-     *  lexicographic order as Java Strings.  Returns null if DIR does
-     *  not denote a directory. */
+     *      *  lexicographic order as Java Strings.  Returns null if DIR does
+     *      *  not denote a directory. */
     static List<String> plainFilenamesIn(File dir) {
         String[] files = dir.list(PLAIN_FILES);
         if (files == null) {
@@ -191,14 +209,14 @@ class Utils {
     /* OTHER FILE UTILITIES */
 
     /** Return the concatentation of FIRST and OTHERS into a File designator,
-     *  analogous to the {@link java.nio.file.Paths.#get(String, String[])}
+     *  analogous to the {@link java.nio.file.Paths .#get(String, String[])}
      *  method. */
     static File join(String first, String... others) {
         return Paths.get(first, others).toFile();
     }
 
     /** Return the concatentation of FIRST and OTHERS into a File designator,
-     *  analogous to the {@link java.nio.file.Paths.#get(String, String[])}
+     *  analogous to the {@link java.nio.file.Paths .#get(String, String[])}
      *  method. */
     static File join(File first, String... others) {
         return Paths.get(first.getPath(), others).toFile();
