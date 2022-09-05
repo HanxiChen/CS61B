@@ -105,7 +105,7 @@ public class Repository {
         if (newFile.exists()) {
             Blob newBlob = new Blob(newFile);
             //如果文件的当前版本和当前的commit版本相同,则不add;如果已经存在,将其从stagingArea中删除(更改回原始版本)
-            if (getCurrentCommit().getId() != null && getCurrentCommit().getId().equals(newBlob.getId())) {
+            if (RepoUtils.getCurrentCommit(MASTER).getId() != null && RepoUtils.getCurrentCommit(MASTER).getId().equals(newBlob.getId())) {
                 if (stagingArea.getRemovedFiles().contains(fileName)) {
                     stagingArea.getRemovedFiles().remove(fileName);
                     stagingArea.save();
@@ -147,7 +147,7 @@ public class Repository {
             return ;
         }
 
-        Commit curCommit = getCurrentCommit();
+        Commit curCommit = getCurrentCommit(MASTER);
         HashMap<String, String> blobs = curCommit.getBlobs();
         ArrayList<String> getAdd = new ArrayList<>(stagingArea.getAddFiles().keySet());
 
@@ -181,7 +181,7 @@ public class Repository {
      * 如果文件没有在 stagingArea 和 被当前commit被追踪,打印 No reason to remove the file.
      */
     public void rm(String fileName) {
-        Commit curCommit = RepoUtils.getCurrentCommit();
+        Commit curCommit = RepoUtils.getCurrentCommit(MASTER);
         ArrayList<String> blobsFileName = new ArrayList<>(curCommit.getBlobs().keySet());
 
         // 判断是否在 stagingArea中
@@ -220,7 +220,7 @@ public class Repository {
      * 合并提交Merge, id的前七位位数字组成,按顺序排列,第一个合并时所在的分支,第二个被合并的分支
      */
     public void log() {
-        Commit commit = RepoUtils.getCurrentCommit();
+        Commit commit = RepoUtils.getCurrentCommit(MASTER);
         ArrayList<String> parents = new ArrayList<>(commit.getParents());
 
         for (String ID : parents) {
@@ -316,7 +316,7 @@ public class Repository {
      * 将commit中的文件存入工作目录中,工作目录有则覆盖,新版本的文件不会被暂存
      */
     public void checkout(String s, String fileName) {
-        Commit currentCommit = RepoUtils.getCurrentCommit();
+        Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
         HashMap<String, String> blobs = currentCommit.getBlobs();
 
         //获取currentCommit
@@ -378,7 +378,7 @@ public class Repository {
      * 判断CWD文中是否tracked等等操作
      */
     private void checkout(String branch, Commit commit) {
-        Commit currentCommit = RepoUtils.getCurrentCommit();
+        Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
 
         //获取工作目录中的文件
         List<String> CWDFile = Utils.plainFilenamesIn(CWD);
@@ -542,7 +542,7 @@ public class Repository {
 
         String branchID = Utils.readContentsAsString(join(GITLET_BRANCHES, branchName + ".txt"));
         Commit branchCommit = RepoUtils.getCommit(branchID);
-        Commit currentCommit = RepoUtils.getCurrentCommit();
+        Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
 
         for (String file : fileList) {
             if (!currentCommit.getBlobs().containsKey(file) && branchCommit.getBlobs().containsKey(file)) {

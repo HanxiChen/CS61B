@@ -27,8 +27,8 @@ public class RepoUtils {
     /**
      * 从 HEAD.txt 获取 当前的commit
      */
-    static Commit getCurrentCommit() {
-        return readObject(GITLET_HEAD, Commit.class);
+    static Commit getCurrentCommit(String master) {
+        return Utils.readObject(join(GITLET_COMMITS, master + ".txt"), Commit.class);
     }
 
     /**
@@ -64,6 +64,7 @@ public class RepoUtils {
 
         return "Merge: " + parentID.substring(0,8) + masterID.substring(0,8);
     }
+
     /**
      * 打印 status
      */
