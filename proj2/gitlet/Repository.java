@@ -26,7 +26,7 @@ public class Repository {
      */
     private String HEAD = "master";
     private String MASTER = "";
-    private StagingArea stagingArea;
+    private StagingArea stagingArea =  null;
 
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
@@ -54,8 +54,13 @@ public class Repository {
     public static final File GITLET_HEAD = join(GITLET_BRANCHES, "HEAD.txt");
 
     public static final File STAGING = join(GITLET_STAGING, "staging.txt");
-    public Repository() {
 
+    public Repository() {
+        if (GITLET_DIR.exists()) {
+            HEAD = Utils.readContentsAsString(GITLET_HEAD);
+            MASTER = Utils.readContentsAsString(join(GITLET_BRANCHES, HEAD + ".txt"));
+            stagingArea = Utils.readObject(STAGING, StagingArea.class);
+        }
     }
 
     /**
@@ -90,7 +95,7 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        stagingArea.save();
     }
 
     /**
@@ -100,7 +105,7 @@ public class Repository {
      * 如果文件不存在,打印 File does not exist.
      */
     public void add(String fileName) {
-        File newFile = new File(fileName);
+        File newFile = join(CWD, fileName);
 
         if (newFile.exists()) {
             Blob newBlob = new Blob(newFile);
@@ -165,6 +170,7 @@ public class Repository {
 
         //创建新的commit,并将HEAD指向它
         Commit commit = new Commit(message, blobs, parents);
+        commit.save();
 
         MASTER = commit.getId();
         join(GITLET_BRANCHES, HEAD + ".txt").delete();
@@ -223,9 +229,11 @@ public class Repository {
         Commit commit = RepoUtils.getCurrentCommit(MASTER);
         ArrayList<String> parents = new ArrayList<>(commit.getParents());
 
+        printLogCommit(commit.getId());
         for (String ID : parents) {
             printLogCommit(ID);
         }
+
     }
 
     /**
