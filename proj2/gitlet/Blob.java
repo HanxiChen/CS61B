@@ -44,6 +44,10 @@ public class Blob implements Serializable {
         return blobFile;
     }
 
+    public String getBlobFileName() {
+        return sourceFile.getName();
+    }
+
     public void save() {
         File parentFile = blobFile.getParentFile();
         if (!parentFile.exists()) {

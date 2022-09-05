@@ -71,11 +71,11 @@ public class Main {
                     }
                     break;
                 case "checkout":
-                    if (check(args, 3) && args[1].equals("--")) {           // 文件名
+                    if (check(args, 3) && args[1].equals("--")) {           // fileName
                         repo.checkout("--", args[1]);
-                    } else if (check(args, 4) && args[2].equals("--")) {    // 提交id  文件名
+                    } else if (check(args, 4) && args[2].equals("--")) {    // Commit-id  fileName
                         repo.checkout(args[1], args[2], args[3]);
-                    } else if (check(args, 2)) {                            // 分支名
+                    } else if (check(args, 2)) {                            // branch
                         repo.checkout(args[1]);
                     } else {
                         System.out.println("Incorrect Operands.");

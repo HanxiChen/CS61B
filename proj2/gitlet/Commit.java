@@ -30,7 +30,7 @@ public class Commit implements Serializable {
     /** The message of this Commit. */
     private String id;
 
-    private Map<String, String> blobs;
+    private HashMap<String, String> blobs;  //<fileName, ID>
 
     private List<String> parents;
 
@@ -42,7 +42,7 @@ public class Commit implements Serializable {
 
     private File commitFile;
 
-    public Commit(String message, Map<String, String> blobs, List<String> parents) {
+    public Commit(String message, HashMap<String, String> blobs, List<String> parents) {
         time = new Date();
         timeStamp = generateTimeStamp();
         id = generateId();
@@ -79,7 +79,7 @@ public class Commit implements Serializable {
         return id;
     }
 
-    public Map<String, String> getBlobs() {
+    public HashMap<String, String> getBlobs() {
         return blobs;
     }
 

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static gitlet.BlobUtils.*;
 import static gitlet.Utils.*;
 import static gitlet.Repository.*;
 
@@ -16,41 +15,52 @@ import static gitlet.Repository.*;
  *  @author HANXICHEN
  */
 public class StagingArea implements Serializable {
-    private Map<String, String> blobs;
+    private HashMap<String, String> addFiles;
 
     private ArrayList<String> removedFiles;
 
     public StagingArea() {
-        blobs = new HashMap<>();
+        addFiles = new HashMap<>();
         removedFiles = new ArrayList<>();
     }
 
-    public void addBlobs(String fileName, String id) {
-        blobs.put(fileName, id);
+    public boolean isNewBlobs(String fileName) {
+        return !addFiles.containsKey(fileName);
     }
 
-    public void addRmFile(String fileName) {
+    public boolean isEmpty() {
+        return addFiles.isEmpty() && removedFiles.isEmpty();
+    }
+
+    public void addBlobs(String fileName, String id) {
+        addFiles.put(fileName, id);
+    }
+
+    public void addRm(String fileName) {
         removedFiles.add(fileName);
     }
 
-    public void delBlobs(Blob blob) {
-        blobs.remove(getFileName(blob));
+    public void delBlobs(String fileName) {
+        addFiles.remove(fileName);
     }
 
-    public void delRmFile(Blob blob) {
-        removedFiles.remove(getFileName(blob));
-    }
-
-    public void saveAdd() {
-        writeObject(STAGING_ADD, this);
-    }
-
-    public void saveRm() {
-        writeObject(STAGING_DEL, this);
+    public void delRm(String fileName) {
+        removedFiles.remove(fileName);
     }
 
     public void clear() {
-        blobs.clear();
+        addFiles.clear();
         removedFiles.clear();
+    }
+
+    public void save() {
+        writeObject(STAGING, this);
+    }
+    public Map<String, String> getAddFiles() {
+        return addFiles;
+    }
+
+    public ArrayList<String> getRemovedFiles() {
+        return removedFiles;
     }
 }
