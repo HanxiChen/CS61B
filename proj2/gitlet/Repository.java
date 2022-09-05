@@ -78,8 +78,8 @@ public class Repository {
         initialCommit.save();
 
         //分支master 和 HEAD
-        File master = join(GITLET_BRANCHES, "master.txt");
-        Utils.writeContents(master, initialCommit.getId());
+        MASTER = initialCommit.getId();
+        Utils.writeContents(join(GITLET_BRANCHES, "master.txt"), MASTER);
 
         Utils.writeContents(GITLET_HEAD, HEAD);
 
