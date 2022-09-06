@@ -14,11 +14,7 @@ public class Main {
      * To check the length of the args match the command needed,
      */
     private static boolean check(String[] args, int len) {
-        if (args.length == len) {
-            return true;
-        }
-        System.out.println("Incorrect Operands");
-        return false;
+        return args.length == len;
     }
     /** Usage: java gitlet.Main ARGS, where ARGS contains
      *  <COMMAND> <OPERAND1> <OPERAND2> ... 
@@ -33,41 +29,57 @@ public class Main {
                 case "init":                        // 初始化
                     if (check(args, 1)) {
                         repo.init();
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "add":                         // 添加
                     if (check(args, 2)) {
                         repo.add(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "commit":                      // 提交
                     if (check(args, 2)) {
                         repo.commit(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "rm":                          // 删除
                     if (check(args, 2)) {
                         repo.rm(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "log":                         // 日志
                     if (check(args, 1)) {
                         repo.log();
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "global-log":                  // 全局日志
                     if (check(args, 1)) {
                         repo.globalLog();
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "find":                        // 寻找
                     if (check(args, 2)) {
                         repo.find(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "status":                      // 状态
                     if (check(args, 1)) {
                         repo.status();
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "checkout":
@@ -84,21 +96,29 @@ public class Main {
                 case "branch":                      // 分支
                     if (check(args, 2)) {
                         repo.branch(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "rm-branch":                   // 删除分支
                     if (check(args, 2)) {
                         repo.rmBranch(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "reset":                       // 充值
                     if (check(args, 2)) {
                         repo.reset(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 case "merge":                       // 合并
                     if (check(args, 2)) {
                         repo.merge(args[1]);
+                    } else {
+                        System.out.println("Incorrect Operands.");
                     }
                     break;
                 default:

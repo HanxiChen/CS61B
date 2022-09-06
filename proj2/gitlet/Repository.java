@@ -144,7 +144,7 @@ public class Repository {
      */
     public void commit(String message) {
         //判断暂存区中文件暂存情况以及message非不非空
-        if (stagingArea.isEmpty()) {
+        if (stagingArea == null || stagingArea.isEmpty()) {
             System.out.println("No changes added to the commit.");
             return ;
         } else if (message.equals("")){

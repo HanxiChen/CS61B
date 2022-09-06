@@ -72,7 +72,7 @@ public class Commit implements Serializable {
             e.printStackTrace();
         }
 
-        writeObject(commitFile, this);
+        Utils.writeObject(commitFile, this);
     }
 
     public String getId() {

@@ -54,7 +54,7 @@ public class StagingArea implements Serializable {
     }
 
     public void save() {
-        writeObject(STAGING, this);
+        Utils.writeObject(STAGING, this);
     }
     public Map<String, String> getAddFiles() {
         return addFiles;
