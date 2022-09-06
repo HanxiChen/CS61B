@@ -1,5 +1,8 @@
 package gitlet;
 
+import static gitlet.Repository.*;
+import static gitlet.Utils.*;
+
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  特定错误的提示:
  *  没有输入参数 Please enter a command.

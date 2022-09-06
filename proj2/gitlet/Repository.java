@@ -344,7 +344,7 @@ public class Repository {
 
         for (String ID : commitList) {
             if (ID.contains(commitId)) {
-                commitId = ID.substring(0, ID.length() - 4);
+                commitId = ID.substring(0, ID.length() - 4);//
                 break;
             }
         }

@@ -23,9 +23,9 @@ public class Blob implements Serializable {
 
     public Blob(File sourceFile) {
         this.sourceFile = sourceFile;
-        content = readContents(sourceFile);
+        content = Utils.readContents(sourceFile);
         id = sha1(content, sourceFile.getPath());
-        blobFile = join(Repository.GITLET_BLOBS, id);
+        blobFile = join(Repository.GITLET_BLOBS, id + ".txt");
     }
 
     public File getSourceFile() {
@@ -53,7 +53,7 @@ public class Blob implements Serializable {
         if (!parentFile.exists()) {
             parentFile.mkdirs();
         }
-        writeObject(blobFile, this);
+        writeObject(blobFile, content);
     }
 }
 
