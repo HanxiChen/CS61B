@@ -50,7 +50,7 @@ public class RepoUtils {
         if (isMergeCommit(c.getMessage())) {
             System.out.println(mergeParents(c));
         }
-        System.out.println("Date: " + c.getTime());
+        System.out.println("Date: " + c.getTimeStamp());
         System.out.println(c.getMessage());
         System.out.println();
     }
