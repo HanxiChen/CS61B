@@ -175,7 +175,7 @@ public class Repository {
      */
     public void rm(String fileName) {
         Commit curCommit = RepoUtils.getCurrentCommit(MASTER);
-        ArrayList<String> blobsFileName = new ArrayList<>(curCommit.getBlobs().keySet());
+        HashMap<String, String> blobs = curCommit.getBlobs();
 
         // 判断是否在 stagingArea中
         boolean isInStagingArea = stagingArea.getAddFiles().containsKey(fileName);
@@ -184,21 +184,10 @@ public class Repository {
         }
 
         // 判断是否被追踪(是否在当前commit的blobs中)
-        boolean isTracked = false;
-        for (String file : blobsFileName) {
-            if (fileName.equals(file)) {
-                isTracked = true;
-                break;
-            }
-        }
-
-        if (isTracked) {
-            String id = new Blob(new File(CWD, fileName)).getId();
-            stagingArea.getRemovedFiles().put(fileName, id);
+        if (blobs.containsKey(fileName)) {
+            stagingArea.getRemovedFiles().put(fileName, blobs.get(fileName));
             restrictedDelete(fileName);
-        }
-
-        if (!isTracked && !isInStagingArea) {
+        } else if (!isInStagingArea) {
             System.out.println("No reason to remove the file.");
         }
 
@@ -218,7 +207,7 @@ public class Repository {
         Commit commit = RepoUtils.getCurrentCommit(MASTER);
         ArrayList<String> parents = new ArrayList<>(commit.getParents());
 
-        printLogCommit(commit.getId());
+        printLogCommit(commit.getId() + ".txt");
         for (String id : parents) {
             printLogCommit(id + ".txt");
         }
@@ -317,8 +306,8 @@ public class Repository {
         // Modifications Not Staged For Commit
         List<String> modifiedFiles = new ArrayList<>();
         for (String fileName : workFile) {
-            if (blobs.size() != 0 && (blobs.containsKey(fileName)
-                    || addFiles.contains(fileName))) {                      // 在当前提交中被追踪
+            if (blobs.size() != 0 && (blobs.containsKey(fileName)       // 在当前提交中被追踪
+                    || addFiles.contains(fileName))) {
                 Blob blob = new Blob(join(CWD, fileName));
                 if (!blobs.get(fileName).equals(blob.getId())) {
                     modifiedFiles.add(fileName + " (modified)");
@@ -333,7 +322,7 @@ public class Repository {
         }
 
         for (String fileName : blobsFile) {
-            if (!addFiles.contains(fileName) && !workFile.contains(fileName)) {
+            if (!removeFiles.contains(fileName) && !workFile.contains(fileName)) {
                 modifiedFiles.add(fileName + " (deleted)");
             }
         }
@@ -400,7 +389,7 @@ public class Repository {
      */
     public void checkout(String branchName) {
         List<String> branchList = Utils.plainFilenamesIn(GITLET_BRANCHES);
-        if (branchList.contains(branchName)) {
+        if (!branchList.contains(branchName + ".txt")) {
             System.out.println("No such branch exists.");
             return;
         }
