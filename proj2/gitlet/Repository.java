@@ -64,8 +64,8 @@ public class Repository {
      */
     public void init() {
         if (GITLET_DIR.exists()) {
-            System.out.println("A Gitlet version-control system " +
-                    "already exists in the current directory.");
+            System.out.println("A Gitlet version-control system "
+                    + "already exists in the current directory.");
             System.exit(0);
         }
 
@@ -102,21 +102,14 @@ public class Repository {
 
         if (newFile.exists()) {
             Blob newBlob = new Blob(newFile);
-            //如果文件的当前版本和当前的commit版本相同,则不add;如果已经存在,将其从stagingArea中删除(更改回原始版本)
-            if (RepoUtils.getCurrentCommit(MASTER).getId() != null &&
-                    RepoUtils.getCurrentCommit(MASTER).getId().equals(newBlob.getId())) {
-                if (stagingArea.getRemovedFiles().containsKey(fileName)) {
-                    stagingArea.getRemovedFiles().remove(fileName);
-                    stagingArea.save();
-                }
-                return;
+            //如果文件的当前版本和当前的commit版本中的文件相同,则不add;如果已经存在,将其从stagingArea中删除(更改回原始版本)
+            if (!RepoUtils.getCurrentCommit(MASTER).getBlobs().containsValue(newBlob.getId())) {
+                stagingArea.getAddFiles().put(fileName, newBlob.getId());
             }
 
             //如果文件在rm命令前已经在暂存区,从暂存区中删除即可(rm命令)
             stagingArea.getRemovedFiles().remove(fileName);
 
-            //将文件添加到stagingArea中
-            stagingArea.getAddFiles().put(fileName, newBlob.getId());
             stagingArea.save();
 
         } else {
@@ -177,7 +170,7 @@ public class Repository {
 
     /**
      * 如果文件在 stagingArea 中,直接将其删除
-     * 如果文件在 当前commit中被追踪,不要删除;没有被追踪,从工作目录中删除
+     * 如果文件在 当前commit 中被追踪,删除; 没有被追踪,从工作目录中删除
      * 如果文件没有在 stagingArea 和 被当前commit被追踪,打印 No reason to remove the file.
      */
     public void rm(String fileName) {
@@ -198,13 +191,14 @@ public class Repository {
                 break;
             }
         }
-        if (!isTracked) {
-            String Id = new Blob(new File(CWD, fileName)).getId();
-            stagingArea.getRemovedFiles().put(fileName, Id);
+
+        if (isTracked) {
+            String id = new Blob(new File(CWD, fileName)).getId();
+            stagingArea.getRemovedFiles().put(fileName, id);
             restrictedDelete(fileName);
         }
 
-        if (!(isTracked && isInStagingArea)) {
+        if (!isTracked && !isInStagingArea) {
             System.out.println("No reason to remove the file.");
         }
 
@@ -225,8 +219,8 @@ public class Repository {
         ArrayList<String> parents = new ArrayList<>(commit.getParents());
 
         printLogCommit(commit.getId());
-        for (String ID : parents) {
-            printLogCommit(ID);
+        for (String id : parents) {
+            printLogCommit(id + ".txt");
         }
 
     }
@@ -268,8 +262,8 @@ public class Repository {
         }
 
         if (!idList.isEmpty()) {
-            for (String ID : idList) {
-                System.out.println(ID);
+            for (String id : idList) {
+                System.out.println(id);
             }
         } else {
             System.out.println("Found no commit with that message.");
@@ -381,9 +375,9 @@ public class Repository {
     public void checkout(String commitId, String s, String fileName) {
         List<String> commitList = Utils.plainFilenamesIn(GITLET_COMMITS);
 
-        for (String Id: commitList) {
-            if (Id.contains(commitId)) {
-                commitId = Id.substring(0, Id.length() - 4);
+        for (String id: commitList) {
+            if (id.contains(commitId)) {
+                commitId = id.substring(0, id.length() - 4);
                 break;
             }
         }
@@ -416,8 +410,8 @@ public class Repository {
         }
 
         //获取指定分支中的commit
-        String Id = Utils.readContentsAsString(join(GITLET_BRANCHES, branchName + ".txt"));
-        Commit commit = RepoUtils.getCommit(Id);
+        String id = Utils.readContentsAsString(join(GITLET_BRANCHES, branchName + ".txt"));
+        Commit commit = RepoUtils.getCommit(id);
         checkout(branchName, commit);
     }
 
@@ -428,9 +422,9 @@ public class Repository {
         Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
 
         //获取工作目录中的文件
-        List<String> CWDFile = Utils.plainFilenamesIn(CWD);
+        List<String> workFile = Utils.plainFilenamesIn(CWD);
         List<String> fileList = new ArrayList<>();
-        for (String file: CWDFile) {
+        for (String file: workFile) {
             if (file.contains(".txt")) {
                 fileList.add(file);
             }
@@ -438,16 +432,18 @@ public class Repository {
 
         //判断CWD中文件是否untracked
         for (String file: fileList) {
-            if (!currentCommit.getBlobs().containsKey(file) && commit.getBlobs().containsKey(file)) {
-                System.out.println("There is an untracked file in the way; " +
-                        "delete it, or add and commit it first.");
-                return ;
+            if (!currentCommit.getBlobs().containsKey(file)
+                    && commit.getBlobs().containsKey(file)) {
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
+                return;
             }
         }
 
         //如果CWD文件中存在被跟踪但没有存在branch指的commit中,删除
         for (String file: fileList) {
-            if (currentCommit.getBlobs().containsKey(file) && !commit.getBlobs().containsKey(file)) {
+            if (currentCommit.getBlobs().containsKey(file)
+                    && !commit.getBlobs().containsKey(file)) {
                 Utils.restrictedDelete(file);
             }
         }
@@ -543,19 +539,22 @@ public class Repository {
 
     /**
      * 找到 branchName 与 HEAD 的 最新的共同祖先(分割点)
-     * 分割点 与 branchName分支的commit-id相同,什么都不做,打印 "Given branch is an ancestor of the current branch."
+     * 分割点 与 branchName分支的commit-id相同,什么都不做
+     *      打印 "Given branch is an ancestor of the current branch."
      * 分割点 与 HEAD分支的commit-id相同,checkout(branchName),打印 "Current branch fast-forwarded."
      *
      * 1. 在branchName有文件被修改,但在HEAD中没有被修改,checkout(branchName)
      * 2. 在HEAD分支修改过的文件,但在分割点后branchName分支没有被修改过,保持原样
-     * 3. HEAD 和 branchName有相同文件被修改,merge中不变;如果一个文件在两个分支都删除了,工作目录还有,merge操作不track不staged
+     * 3. HEAD 和 branchName有相同文件被修改,merge中不变;
+     *      如果一个文件在两个分支都删除了,工作目录还有,merge操作不track不staged
      * 4. 在分割点不存在的,只存在HEAD的文件保持原样
      * 5. 在分割点不存在的,只存在branchName的文件,应checkout和staged
      * 6. 分割点存在,HEAD中没修改,在branchName分支中不存在的,删除和untracked
      * 7. 分割点存在,branchName中没修改,在HEAD分支中不存在的,保持原样
      *
      * 8. 在当前分支和branch以不同方式修改的文件是不允许的,需要将冲突文件内容替换
-     *      分割点不是当前分支和branch,merge自动commit, message Merged [given branch name] into [current branch name]
+     *      分割点不是当前分支和branch,merge自动commit,
+     *      message Merged [given branch name] into [current branch name]
      *
      * merge出现问题,打印 Encountered a merge conflict
      *
@@ -565,7 +564,8 @@ public class Repository {
      * 如果branchName不存在,打印 A branch with that name does not exist.
      * 如果一个分支要和自己合并,打印 Connot merge a branch with itself.
      * 如果 untracked 文件在当前commit 将被合并覆盖或者删除,
-     *      打印 There is an untracked file in the way; delete it, or add and commit it first. 并退出
+     *      打印There is an untracked file in the way; delete it, or add and commit it first.
+     *      退出
      * 在执行其他操作时先执行这个检查
      */
     public void merge(String branchName) {
@@ -590,13 +590,16 @@ public class Repository {
             }
         }
 
-        String branchID = Utils.readContentsAsString(join(GITLET_BRANCHES, branchName + ".txt"));
+        String branchID = Utils.readContentsAsString(
+                join(GITLET_BRANCHES, branchName + ".txt"));
         Commit branchCommit = RepoUtils.getCommit(branchID);
         Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
 
         for (String file: fileList) {
-            if (!currentCommit.getBlobs().containsKey(file) && branchCommit.getBlobs().containsKey(file)) {
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+            if (!currentCommit.getBlobs().containsKey(file)
+                    && branchCommit.getBlobs().containsKey(file)) {
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
                 return;
             }
         }
@@ -609,7 +612,8 @@ public class Repository {
 
         for (String commitID: pBranchCommit) {
             if (pCurrentCommit.contains(commitID)) {
-                spiltPoint = Utils.readObject(join(GITLET_COMMITS, commitID + ".txt"), Commit.class);
+                spiltPoint = Utils.readObject(
+                        join(GITLET_COMMITS, commitID + ".txt"), Commit.class);
                 break;
             }
         }

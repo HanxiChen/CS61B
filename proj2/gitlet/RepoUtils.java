@@ -111,7 +111,8 @@ public class RepoUtils {
         byte[] commit = Utils.readContents(join(GITLET_BLOBS, commitID + ".txt"));
         byte[] branch = Utils.readContents(join(GITLET_BLOBS, branchID + ".txt"));
 
-        byte[] content = new byte[front.length + commit.length + middle.length + branch.length + rear.length];
+        int contentLen = front.length + commit.length + middle.length + branch.length + rear.length;
+        byte[] content = new byte[contentLen];
 
         System.arraycopy(front, 0, content, 0, front.length);
         System.arraycopy(commit, 0, content, front.length, commit.length);

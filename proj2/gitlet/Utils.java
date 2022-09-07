@@ -31,7 +31,8 @@ import java.util.List;
  *      删除一个存在的文件,并不是删除一个文件夹
  * byte[] readContents(File file) 与 String readContentsAsString(File file):
  *      将一个file读成一个 字符数组 和 字符串
- * void writeContents(File file, Object... contents) 与 void writeObject(File file, Serializable obj):
+ * void writeContents(File file, Object... contents)
+ * void writeObject(File file, Serializable obj)
  *      将内容写入文件file中
  * <T extends Serializable> T readObject(File file, Class<T> expectedClass)
  *      将该文件读成 T类型, 然后将它转成目标类
