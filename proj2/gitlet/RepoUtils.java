@@ -1,11 +1,7 @@
 package gitlet;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-
 import static gitlet.Repository.*;
 import static gitlet.Utils.*;
 
@@ -35,15 +31,15 @@ public class RepoUtils {
     /**
      * 获取指定 ID 的 commit
      */
-    static Commit getCommit(String ID) {
-        return readObject(join(GITLET_COMMITS, ID + ".txt"), Commit.class);
+    static Commit getCommit(String commitId) {
+        return readObject(join(GITLET_COMMITS, commitId + ".txt"), Commit.class);
     }
 
     /**
      * 打印 log 中 单个commit的信息
      */
     static void printLogCommit(String fileName) {
-        Commit c = readObject(join(GITLET_COMMITS, fileName + ".txt"), Commit.class);
+        Commit c = readObject(join(GITLET_COMMITS, fileName), Commit.class);
         System.out.println("===");
         System.out.println("commit " + fileName);
 
@@ -63,13 +59,15 @@ public class RepoUtils {
         String master = Utils.readContentsAsString(GITLET_HEAD);
         String masterID = Utils.readContentsAsString(join(GITLET_BRANCHES, master + ".txt"));
 
-        return "Merge: " + parentID.substring(0,7) + " " + masterID.substring(0,7);
+        return "Merge: " + parentID.substring(0, 7) + " " + masterID.substring(0, 7);
     }
 
     /**
      * 打印 status
      */
-    static void printStatus(List<String> branches, List<String> addFiles, List<String> removeFiles, List<String> modifiedFiles, List<String>untrackedFiles) {
+    static void printStatus(List<String> branches, List<String> addFiles, List<String> removeFiles,
+                            List<String> modifiedFiles, List<String> untrackedFiles) {
+
         System.out.println("=== Branches ===");
 
         System.out.println(branches.get(0));
