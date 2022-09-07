@@ -3,6 +3,7 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static gitlet.Repository.*;
@@ -62,32 +63,45 @@ public class RepoUtils {
         String master = Utils.readContentsAsString(GITLET_HEAD);
         String masterID = Utils.readContentsAsString(join(GITLET_BRANCHES, master + ".txt"));
 
-        return "Merge: " + parentID.substring(0,8) + masterID.substring(0,8);
+        return "Merge: " + parentID.substring(0,7) + " " + masterID.substring(0,7);
     }
 
     /**
      * 打印 status
      */
-    static void printStatus(List<String> branches, List<String> addFiles, List<String> removeFiles) {
+    static void printStatus(List<String> branches, List<String> addFiles, List<String> removeFiles, List<String> modifiedFiles, List<String>untrackedFiles) {
         System.out.println("=== Branches ===");
-        for (String branch : branches) {
-            System.out.println(branch);
+
+        System.out.println(branches.get(0));
+        for (int i = 1; i < branches.size(); i++) {
+            String branch = branches.get(i);
+            System.out.println(branch.substring(0, branch.length() - 4));
         }
+        System.out.println();
 
         System.out.println("=== Staged Files ===");
         for (String stagedFile : addFiles) {
             System.out.println(stagedFile);
         }
+        System.out.println();
 
         System.out.println("=== Removed Files ===");
-        for (String removedFiles : removeFiles) {
-            System.out.println(removedFiles);
+        for (String removedFile : removeFiles) {
+            System.out.println(removedFile);
         }
+        System.out.println();
 
-        System.out.println();
         System.out.println("=== Modifications Not Staged For Commit ===");
+        for (String modifiedFile : modifiedFiles) {
+            System.out.println(modifiedFile);
+        }
         System.out.println();
+
         System.out.println("=== Untracked Files ===");
+        for (String untrackedFile : untrackedFiles) {
+            System.out.println(untrackedFile);
+        }
+        System.out.println();
     }
 
 

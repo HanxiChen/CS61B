@@ -17,11 +17,11 @@ import static gitlet.Repository.*;
 public class StagingArea implements Serializable {
     private HashMap<String, String> addFiles;
 
-    private ArrayList<String> removedFiles;
+    private HashMap<String, String> removedFiles;
 
     public StagingArea() {
         addFiles = new HashMap<>();
-        removedFiles = new ArrayList<>();
+        removedFiles = new HashMap<>();
     }
 
     public boolean isNewBlobs(String fileName) {
@@ -32,21 +32,7 @@ public class StagingArea implements Serializable {
         return addFiles.isEmpty() && removedFiles.isEmpty();
     }
 
-    public void addBlobs(String fileName, String id) {
-        addFiles.put(fileName, id);
-    }
 
-    public void addRm(String fileName) {
-        removedFiles.add(fileName);
-    }
-
-    public void delBlobs(String fileName) {
-        addFiles.remove(fileName);
-    }
-
-    public void delRm(String fileName) {
-        removedFiles.remove(fileName);
-    }
 
     public void clear() {
         addFiles.clear();
@@ -60,7 +46,7 @@ public class StagingArea implements Serializable {
         return addFiles;
     }
 
-    public ArrayList<String> getRemovedFiles() {
+    public Map<String, String> getRemovedFiles() {
         return removedFiles;
     }
 }

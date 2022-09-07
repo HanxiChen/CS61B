@@ -89,7 +89,7 @@ public class Main {
                     if (check(args, 3) && args[1].equals("--")) {           // fileName
                         repo.checkout("--", args[2]);
                     } else if (check(args, 4) && args[2].equals("--")) {    // Commit-id  fileName
-                        repo.checkout(args[1], args[2], args[3]);
+                        repo.checkout(args[1], "--", args[3]);
                     } else if (check(args, 2)) {                            // branch
                         repo.checkout(args[1]);
                     } else {

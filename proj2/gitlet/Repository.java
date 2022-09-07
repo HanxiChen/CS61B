@@ -2,10 +2,7 @@ package gitlet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static gitlet.Utils.*;
 import static gitlet.RepoUtils.*;
@@ -26,7 +23,7 @@ public class Repository {
      */
     private String HEAD = "master";
     private String MASTER = "";
-    private StagingArea stagingArea =  null;
+    private StagingArea stagingArea = null;
 
     /** The current working directory. */
     public static final File CWD = new File(System.getProperty("user.dir"));
@@ -111,7 +108,7 @@ public class Repository {
             Blob newBlob = new Blob(newFile);
             //如果文件的当前版本和当前的commit版本相同,则不add;如果已经存在,将其从stagingArea中删除(更改回原始版本)
             if (RepoUtils.getCurrentCommit(MASTER).getId() != null && RepoUtils.getCurrentCommit(MASTER).getId().equals(newBlob.getId())) {
-                if (stagingArea.getRemovedFiles().contains(fileName)) {
+                if (stagingArea.getRemovedFiles().containsKey(fileName)) {
                     stagingArea.getRemovedFiles().remove(fileName);
                     stagingArea.save();
                 }
@@ -121,11 +118,8 @@ public class Repository {
             //如果文件在rm命令前已经在暂存区,从暂存区中删除即可(rm命令)
             stagingArea.getRemovedFiles().remove(fileName);
 
-            //覆盖之前的版本,关于blob类
-            Utils.writeObject(join(GITLET_BLOBS,  newBlob.getId() + ".txt"), newBlob);
-
             //将文件添加到stagingArea中
-            stagingArea.addBlobs(fileName, newBlob.getId());
+            stagingArea.getAddFiles().put(fileName, newBlob.getId());
             stagingArea.save();
 
         } else {
@@ -155,12 +149,15 @@ public class Repository {
         Commit curCommit = getCurrentCommit(MASTER);
         HashMap<String, String> blobs = curCommit.getBlobs();
         ArrayList<String> getAdd = new ArrayList<>(stagingArea.getAddFiles().keySet());
+        ArrayList<String> getRemoved = new ArrayList<>(stagingArea.getRemovedFiles().keySet());
 
         //对当前commit中的 blobs 进行 put和remove处理
         for(String fileName : getAdd) {
             blobs.put(fileName, stagingArea.getAddFiles().get(fileName));
+            Blob blob = new Blob(new File(CWD, fileName));
+            Utils.writeObject(join(GITLET_BLOBS, blob.getId() + ".txt"), blob);
         }
-        for(String fileName : stagingArea.getRemovedFiles()) {
+        for(String fileName : getRemoved) {
             blobs.remove(fileName);
         }
 
@@ -204,9 +201,10 @@ public class Repository {
                 break;
             }
         }
-        if (isTracked) {
+        if (!isTracked) {
+            String ID = new Blob(new File(CWD, fileName)).getId();
+            stagingArea.getRemovedFiles().put(fileName, ID);
             restrictedDelete(fileName);
-            stagingArea.addRm(fileName);
         }
 
         if (!(isTracked && isInStagingArea)) {
@@ -265,9 +263,9 @@ public class Repository {
             return ;
         }
         for (String fileName : fileNameList) {
-            Commit c = readObject(join(GITLET_COMMITS, fileName + ".txt"), Commit.class);
+            Commit c = readObject(join(GITLET_COMMITS, fileName), Commit.class);
 
-            if (c.getMessage().equals(message)) {
+            if (c.getMessage().contains(message)) {
                 IDList.add(c.getId());
             }
         }
@@ -302,10 +300,15 @@ public class Repository {
      * random.stuff
      */
     public void status() {
-        //得到branches
-        List<String> branches = Utils.plainFilenamesIn(GITLET_BRANCHES);
-        branches.remove("HEAD");
-        branches.remove(HEAD);
+        Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
+        List<String> CWDFile = Utils.plainFilenamesIn(CWD);
+        HashMap<String, String> blobs = currentCommit.getBlobs();
+        List<String> blobsFile = new ArrayList<>(currentCommit.getBlobs().keySet());
+
+        // 得到branches
+        ArrayList<String> branches = new ArrayList<>(Utils.plainFilenamesIn(GITLET_BRANCHES));
+        branches.remove("HEAD.txt");
+        branches.remove(HEAD + ".txt");
         branches.add("*" + HEAD);
         Collections.sort(branches);
 
@@ -313,11 +316,44 @@ public class Repository {
         List<String> addFiles = new ArrayList<>(stagingArea.getAddFiles().keySet());
         Collections.sort(addFiles);
 
-        List<String> removeFiles = stagingArea.getRemovedFiles();
+        List<String> removeFiles = new ArrayList<>(stagingArea.getRemovedFiles().keySet());
         Collections.sort(removeFiles);
 
-        //按格式打印
-        printStatus(branches, addFiles, removeFiles);
+        // Modifications Not Staged For Commit
+        List<String> modifiedFiles = new ArrayList<>();
+        for (String fileName : CWDFile) {
+            if (blobs.size() != 0 && (blobs.containsKey(fileName) || addFiles.contains(fileName))) {                      // 在当前提交中被追踪
+                Blob blob = new Blob(join(CWD, fileName));
+                if (!blobs.get(fileName).equals(blob.getId())) {
+                    modifiedFiles.add(fileName + " (modified)");
+                }
+            }
+        }
+
+        for (String fileName : addFiles) {
+            if (!CWDFile.contains(fileName)) {
+                modifiedFiles.add(fileName + " (deleted)");
+            }
+        }
+
+        for (String fileName : blobsFile) {
+            if (!addFiles.contains(fileName) && !CWDFile.contains(fileName)) {
+                modifiedFiles.add(fileName + " (deleted)");
+            }
+        }
+        Collections.sort(modifiedFiles);
+
+        // Untracked Files
+        List<String> untrackedFiles = new ArrayList<>();
+        for (String file : CWDFile) {
+            if (file.contains(".txt") && !blobs.containsKey(file) && !stagingArea.getAddFiles().containsKey(file)) {
+                untrackedFiles.add(file);
+            }
+        }
+        Collections.sort(untrackedFiles);
+
+        // 按格式打印
+        printStatus(branches, addFiles, removeFiles, modifiedFiles, untrackedFiles);
     }
 
     /**
@@ -423,7 +459,7 @@ public class Repository {
         stagingArea.save();
 
         HEAD = branch;  MASTER = commit.getId();
-        join(GITLET_BRANCHES, HEAD + ".txt").delete();
+        Utils.writeContents(GITLET_HEAD, HEAD);
         Utils.writeContents(join(GITLET_BRANCHES, HEAD + ".txt"), MASTER);
         Utils.writeObject(join(GITLET_COMMITS, MASTER + ".txt"), commit);
     }
@@ -439,9 +475,10 @@ public class Repository {
         }
 
         //添加fileName文件
-        byte[] blobs = Utils.readContents(join(GITLET_BLOBS, commit.getBlobs().get(fileName) + ".txt"));
+        Blob blob = Utils.readObject(join(GITLET_BLOBS, commit.getBlobs().get(fileName) + ".txt"), Blob.class);
+        byte[] fileContent = blob.getContent();
         File newFile = join(CWD, fileName);
-        Utils.writeObject(newFile, blobs);
+        Utils.writeContents(newFile, fileContent);
     }
 
     /**
@@ -592,7 +629,7 @@ public class Repository {
                 // 1(2) 文件在 branch 中修改但是没有在 HEAD 中修改, checkout 和 staged
                 if (!spID.equals(branchID) && spID.equals(currentFileID)) {
                     checkout(branchID, "--", fileName);
-                    stagingArea.addBlobs(fileName, branchFileID);
+                    stagingArea.getAddFiles().put(fileName, branchFileID);
                     stagingArea.save();
                 } else if (spID.equals(branchID) && spID.equals(currentFileID)) {
                     File mergeFile = join(CWD, fileName + ".txt");
@@ -611,7 +648,7 @@ public class Repository {
         for (String file : branchFile) {
             if (!spFile.contains(file) && !commitFile.contains(file)) {
                 checkout(branchID, "--", file);
-                stagingArea.addBlobs(file, branchCommit.getBlobs().get(file));
+                stagingArea.getAddFiles().put(file, branchCommit.getBlobs().get(file));
                 stagingArea.save();
             }
         }
