@@ -207,9 +207,9 @@ public class Repository {
         Commit commit = RepoUtils.getCurrentCommit(MASTER);
         ArrayList<String> parents = new ArrayList<>(commit.getParents());
 
-        printLogCommit(commit.getId() + ".txt");
+        printLogCommit(commit.getId());
         for (String id : parents) {
-            printLogCommit(id + ".txt");
+            printLogCommit(id);
         }
 
     }
@@ -225,6 +225,7 @@ public class Repository {
             return;
         }
         for (String fileName : fileNameList) {
+            fileName = fileName.substring(0, fileName.length() - 4);
             printLogCommit(fileName);
         }
     }

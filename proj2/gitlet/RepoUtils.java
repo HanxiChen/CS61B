@@ -39,7 +39,7 @@ public class RepoUtils {
      * 打印 log 中 单个commit的信息
      */
     static void printLogCommit(String fileName) {
-        Commit c = readObject(join(GITLET_COMMITS, fileName), Commit.class);
+        Commit c = readObject(join(GITLET_COMMITS, fileName + ".txt"), Commit.class);
         System.out.println("===");
         System.out.println("commit " + fileName);
 
