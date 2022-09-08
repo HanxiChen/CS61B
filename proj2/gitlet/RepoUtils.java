@@ -1,6 +1,6 @@
 package gitlet;
 
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import static gitlet.Repository.*;
@@ -145,24 +145,19 @@ public class RepoUtils {
 
     /**
      * conflict 存在时 文件内容
+     * @return
      */
-    static byte[] mergeContents(String commitID, String branchID) {
-        byte[] front = "<<<<<<< HEAD\n".getBytes(StandardCharsets.UTF_8);
-        byte[] middle = "=======\n".getBytes(StandardCharsets.UTF_8);
-        byte[] rear = ">>>>>>>\n".getBytes(StandardCharsets.UTF_8);
+    static String mergeContents(String commitID, String branchID) {
+        String front = "<<<<<<< HEAD\n";
+        String middle = "\n=======\n";
+        String rear = "\n>>>>>>>\n";
 
-        byte[] commit = Utils.readContents(join(GITLET_BLOBS, commitID + ".txt"));
-        byte[] branch = Utils.readContents(join(GITLET_BLOBS, branchID + ".txt"));
+        byte[] commitContent = readObject(join(GITLET_BLOBS, commitID + ".txt"), Blob.class).getContent();
+        String commit = new String(commitContent);
 
-        int contentLen = front.length + commit.length + middle.length + branch.length + rear.length;
-        byte[] content = new byte[contentLen];
+        byte[] branchContent = readObject(join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
+        String branch = new String(branchContent);
 
-        System.arraycopy(front, 0, content, 0, front.length);
-        System.arraycopy(commit, 0, content, front.length, commit.length);
-        System.arraycopy(middle, 0, content, commit.length, middle.length);
-        System.arraycopy(branch, 0, content, middle.length, branch.length);
-        System.arraycopy(rear, 0, content, branch.length, rear.length);
-
-        return content;
+        return front + commit + middle + branch + rear;
     }
 }

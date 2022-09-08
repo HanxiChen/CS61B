@@ -607,9 +607,9 @@ public class Repository {
                     stagingArea.getAddFiles().put(fileName, branchFileID);
                     stagingArea.save();
                 } else if (!spID.equals(branchID) && !branchID.equals(currentFileID)) {
-                    File mergeFile = join(CWD, fileName + ".txt");
-                    byte[] contents = RepoUtils.mergeContents(currentFileID, branchFileID);
-                    Utils.writeContents(mergeFile, (Object) contents);
+                    File mergeFile = join(CWD, fileName);
+                    String contents = mergeContents(currentFileID, branchFileID);
+                    Utils.writeContents(mergeFile, contents);
                     conflict = true;
                 }
             }
