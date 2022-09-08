@@ -365,7 +365,7 @@ public class Repository {
     public void checkout(String commitId, String s, String fileName) {
         List<String> commitList = Utils.plainFilenamesIn(GITLET_COMMITS);
 
-        boolean commitExists = commitList.contains(commitId + ".txt");
+        boolean commitExists = commitList.contains(commitId);
 
         if (commitExists) {
             Commit commit = RepoUtils.getCommit(commitId);
@@ -408,13 +408,7 @@ public class Repository {
         Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
 
         //获取工作目录中的文件
-        List<String> workFile = Utils.plainFilenamesIn(CWD);
-        List<String> fileList = new ArrayList<>();
-        for (String file: workFile) {
-            if (file.contains(".txt")) {
-                fileList.add(file);
-            }
-        }
+        List<String> fileList = RepoUtils.getWorkFile();
 
         //判断CWD中文件是否untracked
         for (String file: fileList) {
@@ -515,13 +509,14 @@ public class Repository {
      * 将当前分支的head移动到该commit上
      */
     public void reset(String commitId) {
-        Commit commit = RepoUtils.getCommit(commitId);
+        File file = join(GITLET_COMMITS, commitId + ".txt");
 
-        if (commit == null) {
+        if (!file.exists()) {
             System.out.println("No commit with that id exists.");
             return;
         }
 
+        Commit commit = RepoUtils.getCommit(commitId);
         checkout(HEAD, commit);
     }
 
@@ -557,6 +552,7 @@ public class Repository {
      * 在执行其他操作时先执行这个检查
      */
     public void merge(String branchName) {
+        List<String> fileList = RepoUtils.getWorkFile();
         // Failure cases
         if (!stagingArea.isEmpty()) {
             System.out.println("You have uncommitted changes.");
@@ -569,14 +565,12 @@ public class Repository {
             return;
         }
 
-        // Failure cases: untracked 文件
-        List<String> fileList = RepoUtils.getWorkFile();
-
         String branchID = Utils.readContentsAsString(
                 join(GITLET_BRANCHES, branchName + ".txt"));
         Commit branchCommit = RepoUtils.getCommit(branchID);
         Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
 
+        // Failure cases: untracked 文件
         for (String file: fileList) {
             if (!currentCommit.getBlobs().containsKey(file)
                     && branchCommit.getBlobs().containsKey(file)) {
@@ -649,7 +643,6 @@ public class Repository {
             commit(mergeCommitMessage);
         } else {
             System.out.println("Encountered a merge conflict.");
-            return;
         }
     }
 }

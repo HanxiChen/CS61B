@@ -1,5 +1,6 @@
 package gitlet;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,9 +119,13 @@ public class RepoUtils {
     }
 
     /**
+     * merge failure case
+     */
+
+    /**
      * 寻找 branch 和 当前分支 的分割点
      */
-    static Commit getSpiltPoint (Commit branchCommit, Commit currentCommit) {
+    static Commit getSpiltPoint(Commit branchCommit, Commit currentCommit) {
         List<String> pBranchCommit = branchCommit.getParents();
         List<String> pCurrentCommit = currentCommit.getParents();
         for (String commitID: pBranchCommit) {
@@ -132,6 +137,9 @@ public class RepoUtils {
         return null;
     }
 
+    /**
+     * conflict 存在时 文件内容
+     */
     static byte[] mergeContents(String commitID, String branchID) {
         byte[] front = "<<<<<<< HEAD\n".getBytes(StandardCharsets.UTF_8);
         byte[] middle = "=======\n".getBytes(StandardCharsets.UTF_8);
