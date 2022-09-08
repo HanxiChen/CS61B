@@ -169,7 +169,7 @@ public class Repository {
     }
 
     /**
-     * 如果文件在 stagingArea 中,直接将其删除
+     * 如果文件在 stagingArea 中的 addFiles ,直接将其删除
      * 如果文件在 当前commit 中被追踪,删除; 没有被追踪,从工作目录中删除
      * 如果文件没有在 stagingArea 和 被当前commit被追踪,打印 No reason to remove the file.
      */
@@ -177,7 +177,7 @@ public class Repository {
         Commit curCommit = RepoUtils.getCurrentCommit(MASTER);
         HashMap<String, String> blobs = curCommit.getBlobs();
 
-        // 判断是否在 stagingArea中
+        // 判断是否在 stagingArea 中的 addFiles中
         boolean isInStagingArea = stagingArea.getAddFiles().containsKey(fileName);
         if (isInStagingArea) {
             stagingArea.getAddFiles().remove(fileName);
@@ -186,7 +186,9 @@ public class Repository {
         // 判断是否被追踪(是否在当前commit的blobs中)
         if (blobs.containsKey(fileName)) {
             stagingArea.getRemovedFiles().put(fileName, blobs.get(fileName));
-            restrictedDelete(fileName);
+            if (getWorkFile().contains(fileName)) {
+                restrictedDelete(fileName);
+            }
         } else if (!isInStagingArea) {
             System.out.println("No reason to remove the file.");
         }
@@ -602,11 +604,12 @@ public class Repository {
             if (spiltPoint.getBlobs().containsKey(fileName)
                     && branchCommit.getBlobs().containsKey(fileName)) {
                 // 1(2) 文件在 branch 中修改但是没有在 HEAD 中修改, checkout 和 staged
-                if (!spID.equals(branchID) && spID.equals(currentFileID)) {
+                if (!spID.equals(branchFileID) && spID.equals(currentFileID)) {
                     checkout(branchID, "--", fileName);
                     stagingArea.getAddFiles().put(fileName, branchFileID);
                     stagingArea.save();
-                } else if (!spID.equals(branchID) && !branchID.equals(currentFileID)) {
+                }
+                if (!spID.equals(branchFileID) && !spID.equals(currentFileID) && !branchFileID.equals(currentFileID)) {
                     File mergeFile = join(CWD, fileName);
                     String contents = mergeContents(currentFileID, branchFileID);
                     Utils.writeContents(mergeFile, contents);
@@ -617,7 +620,7 @@ public class Repository {
         List<String> spFile = new ArrayList<>(spiltPoint.getBlobs().keySet());
         List<String> commitFile = new ArrayList<>(currentCommit.getBlobs().keySet());
         List<String> branchFile = new ArrayList<>(branchCommit.getBlobs().keySet());
-        // 5(4) 文件在分割点不存在的,只存在branchName, checkout和staged
+        // 5(4) 文件在分割点不存在的,只存在branchName中, checkout和staged
         for (String file: branchFile) {
             if (!spFile.contains(file) && !commitFile.contains(file)) {
                 checkout(branchID, "--", file);
@@ -629,6 +632,10 @@ public class Repository {
         for (String file: spFile) {
             if (commitFile.contains(file) && !branchFile.contains(file)
                     && spiltPoint.getBlobs().get(file).equals(currentCommit.getBlobs().get(file))) {
+                rm(file);
+            }
+            if (branchFile.contains(file) && !commitFile.contains(file)
+                    && spiltPoint.getBlobs().get(file).equals(branchCommit.getBlobs().get(file))) {
                 rm(file);
             }
         }

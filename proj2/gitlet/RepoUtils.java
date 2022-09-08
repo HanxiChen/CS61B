@@ -1,6 +1,5 @@
 package gitlet;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import static gitlet.Repository.*;
@@ -145,18 +144,17 @@ public class RepoUtils {
 
     /**
      * conflict 存在时 文件内容
-     * @return
      */
     static String mergeContents(String commitID, String branchID) {
         String front = "<<<<<<< HEAD\n";
         String middle = "\n=======\n";
         String rear = "\n>>>>>>>\n";
 
-        byte[] commitContent = readObject(join(GITLET_BLOBS, commitID + ".txt"), Blob.class).getContent();
-        String commit = new String(commitContent);
+        byte[] commitC = readObject(join(GITLET_BLOBS, commitID + ".txt"), Blob.class).getContent();
+        String commit = new String(commitC);
 
-        byte[] branchContent = readObject(join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
-        String branch = new String(branchContent);
+        byte[] branchC = readObject(join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
+        String branch = new String(branchC);
 
         return front + commit + middle + branch + rear;
     }
