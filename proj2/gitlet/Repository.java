@@ -571,13 +571,10 @@ public class Repository {
             System.out.println("Connot merge a branch with itself.");
             return;
         }
-
         String branchID = Utils.readContentsAsString(
                 join(GITLET_BRANCHES, branchName + ".txt"));
         Commit branchCommit = RepoUtils.getCommit(branchID);
         Commit currentCommit = RepoUtils.getCurrentCommit(MASTER);
-
-        // Failure cases: untracked 文件
         for (String file: fileList) {
             if (!currentCommit.getBlobs().containsKey(file)
                     && branchCommit.getBlobs().containsKey(file)) {
@@ -586,26 +583,22 @@ public class Repository {
                 return;
             }
         }
-
         // 寻找 split point 分割点
         Commit spiltPoint = getSpiltPoint(branchCommit, currentCommit);
-
         // 对分割点进行判断和操作
-        if (spiltPoint.getId().equals(RepoUtils.getParentCommit(branchCommit).getId())) {
+        if (currentCommit.getParents().contains(branchCommit.getId())) {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
-        } else if (spiltPoint.getId().equals(RepoUtils.getParentCommit(currentCommit).getId())) {
+        } else if (branchCommit.getParents().contains(currentCommit.getId())) {
             checkout(branchName, branchCommit);
             System.out.println("Current branch fast-forwarded.");
             return;
         }
-
         boolean conflict = false;
         for (String fileName: currentCommit.getBlobs().keySet()) {
             String currentFileID = currentCommit.getBlobs().get(fileName);
             String branchFileID = branchCommit.getBlobs().get(fileName);
             String spID = spiltPoint.getBlobs().get(fileName);
-
             if (spiltPoint.getBlobs().containsKey(fileName)
                     && branchCommit.getBlobs().containsKey(fileName)) {
                 // 1(2) 文件在 branch 中修改但是没有在 HEAD 中修改, checkout 和 staged
@@ -621,11 +614,9 @@ public class Repository {
                 }
             }
         }
-
         List<String> spFile = new ArrayList<>(spiltPoint.getBlobs().keySet());
         List<String> commitFile = new ArrayList<>(currentCommit.getBlobs().keySet());
         List<String> branchFile = new ArrayList<>(branchCommit.getBlobs().keySet());
-
         // 5(4) 文件在分割点不存在的,只存在branchName, checkout和staged
         for (String file: branchFile) {
             if (!spFile.contains(file) && !commitFile.contains(file)) {
@@ -641,7 +632,6 @@ public class Repository {
                 rm(file);
             }
         }
-
         if (!conflict) {
             String mergeCommitMessage = "Merged " + branchName + " into " + HEAD + ".";
             commit(mergeCommitMessage);
