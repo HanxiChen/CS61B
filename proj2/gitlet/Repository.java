@@ -632,11 +632,10 @@ public class Repository {
                 rm(file);
             }
         }
-        if (!conflict) {
-            String mergeCommitMessage = "Merged " + branchName + " into " + HEAD + ".";
-            commit(mergeCommitMessage);
-        } else {
+        if (conflict) {
             System.out.println("Encountered a merge conflict.");
         }
+        String mergeCommitMessage = "Merged " + branchName + " into " + HEAD + ".";
+        commit(mergeCommitMessage);
     }
 }
