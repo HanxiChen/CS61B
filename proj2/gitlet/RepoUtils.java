@@ -37,6 +37,13 @@ public class RepoUtils {
     }
 
     /**
+     * 获取指定　ID　的　parentCommit
+     */
+    static Commit getParentCommit(Commit commit) {
+        String parentCommitId = commit.getParents().get(0);
+        return getCommit(parentCommitId);
+    }
+    /**
      * 获取 当前工作目录 List
      */
     static List<String> getWorkFile() {

@@ -368,6 +368,7 @@ public class Repository {
         boolean commitExists = false;
         for (String commitFile : commitList) {
             if (commitFile.contains(commitId)) {
+                commitId = commitFile.substring(0, commitFile.length() - 4);
                 commitExists = true;
                 break;
             }
@@ -590,10 +591,10 @@ public class Repository {
         Commit spiltPoint = getSpiltPoint(branchCommit, currentCommit);
 
         // 对分割点进行判断和操作
-        if (spiltPoint.getId().equals(branchCommit.getId())) {
+        if (spiltPoint.getId().equals(RepoUtils.getParentCommit(branchCommit).getId())) {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
-        } else if (spiltPoint.getId().equals(currentCommit.getId())) {
+        } else if (spiltPoint.getId().equals(RepoUtils.getParentCommit(currentCommit).getId())) {
             checkout(branchName, branchCommit);
             System.out.println("Current branch fast-forwarded.");
             return;
@@ -633,13 +634,10 @@ public class Repository {
                 stagingArea.save();
             }
         }
-        // 6\7 文件在分割点存在,HEAD中没修改(ID不变),在branchName分支中不存在的,删除和untracked
+        // 6\7 文件在分割点存在, HEAD中没修改(ID不变),在branchName分支中不存在的,删除和untracked
         for (String file: spFile) {
             if (commitFile.contains(file) && !branchFile.contains(file)
                     && spiltPoint.getBlobs().get(file).equals(currentCommit.getBlobs().get(file))) {
-                rm(file);
-            } else if (branchFile.contains(file) && !commitFile.contains(file)
-                    && spiltPoint.getBlobs().get(file).equals(branchCommit.getBlobs().get(file))) {
                 rm(file);
             }
         }
