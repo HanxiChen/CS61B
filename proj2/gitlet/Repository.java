@@ -606,7 +606,7 @@ public class Repository {
                     checkout(branchID, "--", fileName);
                     stagingArea.getAddFiles().put(fileName, branchFileID);
                     stagingArea.save();
-                } else if (spID.equals(branchID) && spID.equals(currentFileID)) {
+                } else if (!spID.equals(branchID) && !branchID.equals(currentFileID)) {
                     File mergeFile = join(CWD, fileName + ".txt");
                     byte[] contents = RepoUtils.mergeContents(currentFileID, branchFileID);
                     Utils.writeContents(mergeFile, (Object) contents);
