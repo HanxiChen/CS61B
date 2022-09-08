@@ -365,21 +365,17 @@ public class Repository {
     public void checkout(String commitId, String s, String fileName) {
         List<String> commitList = Utils.plainFilenamesIn(GITLET_COMMITS);
 
-        for (String id: commitList) {
-            if (id.contains(commitId)) {
-                commitId = id.substring(0, id.length() - 4);
-                break;
-            }
-        }
+        boolean commitExists = commitList.contains(commitId + ".txt");
 
-        //获取指定 commit
-        Commit commit = RepoUtils.getCommit(commitId);
-        if (commit == null) {
-            System.out.println("No commit with that id exists.");
-        } else if (!commit.getBlobs().containsKey(fileName)) {
-            System.out.println("File does not exist in that commit.");
+        if (commitExists) {
+            Commit commit = RepoUtils.getCommit(commitId);
+            if (!commit.getBlobs().containsKey(fileName)) {
+                System.out.println("File does not exist in that commit.");
+            } else {
+                checkout(RepoUtils.getCommit(commitId), fileName);
+            }
         } else {
-            checkout(commit, fileName);
+            System.out.println("No commit with that id exists.");
         }
     }
 
@@ -507,9 +503,11 @@ public class Repository {
 
         if (HEAD.equals(branchName)) {
             System.out.println("Connot remove the current branch.");
+            return;
         }
 
         branch.delete();
+        HEAD = "master";    Utils.writeContents(GITLET_HEAD, HEAD);
     }
 
     /**
@@ -572,13 +570,7 @@ public class Repository {
         }
 
         // Failure cases: untracked 文件
-        List<String> workFile = Utils.plainFilenamesIn(CWD);
-        List<String> fileList = new ArrayList<>();
-        for (String file: workFile) {
-            if (file.contains(".txt")) {
-                fileList.add(file);
-            }
-        }
+        List<String> fileList = RepoUtils.getWorkFile();
 
         String branchID = Utils.readContentsAsString(
                 join(GITLET_BRANCHES, branchName + ".txt"));
@@ -595,18 +587,7 @@ public class Repository {
         }
 
         // 寻找 split point 分割点
-        List<String> pBranchCommit = branchCommit.getParents();
-        List<String> pCurrentCommit = currentCommit.getParents();
-
-        Commit spiltPoint = null;
-
-        for (String commitID: pBranchCommit) {
-            if (pCurrentCommit.contains(commitID)) {
-                spiltPoint = Utils.readObject(
-                        join(GITLET_COMMITS, commitID + ".txt"), Commit.class);
-                break;
-            }
-        }
+        Commit spiltPoint = getSpiltPoint(branchCommit, currentCommit);
 
         // 对分割点进行判断和操作
         if (spiltPoint.getId().equals(branchCommit.getId())) {
@@ -624,7 +605,8 @@ public class Repository {
             String branchFileID = branchCommit.getBlobs().get(fileName);
             String spID = spiltPoint.getBlobs().get(fileName);
 
-            if (spiltPoint.getBlobs().containsKey(fileName) && branchCommit.getBlobs().containsKey(fileName)) {
+            if (spiltPoint.getBlobs().containsKey(fileName)
+                    && branchCommit.getBlobs().containsKey(fileName)) {
                 // 1(2) 文件在 branch 中修改但是没有在 HEAD 中修改, checkout 和 staged
                 if (!spID.equals(branchID) && spID.equals(currentFileID)) {
                     checkout(branchID, "--", fileName);

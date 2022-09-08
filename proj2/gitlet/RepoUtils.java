@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import static gitlet.Repository.*;
 import static gitlet.Utils.*;
@@ -33,6 +34,20 @@ public class RepoUtils {
      */
     static Commit getCommit(String commitId) {
         return readObject(join(GITLET_COMMITS, commitId + ".txt"), Commit.class);
+    }
+
+    /**
+     * 获取 当前工作目录 List
+     */
+    static List<String> getWorkFile() {
+        List<String> workFile = Utils.plainFilenamesIn(CWD);
+        List<String> fileList = new ArrayList<>();
+        for (String file: workFile) {
+            if (file.contains(".txt")) {
+                fileList.add(file);
+            }
+        }
+        return fileList;
     }
 
     /**
@@ -102,8 +117,22 @@ public class RepoUtils {
         System.out.println();
     }
 
+    /**
+     * 寻找 branch 和 当前分支 的分割点
+     */
+    static Commit getSpiltPoint (Commit branchCommit, Commit currentCommit) {
+        List<String> pBranchCommit = branchCommit.getParents();
+        List<String> pCurrentCommit = currentCommit.getParents();
+        for (String commitID: pBranchCommit) {
+            if (pCurrentCommit.contains(commitID)) {
+                return Utils.readObject(
+                        join(GITLET_COMMITS, commitID + ".txt"), Commit.class);
+            }
+        }
+        return null;
+    }
 
-    public static byte[] mergeContents(String commitID, String branchID) {
+    static byte[] mergeContents(String commitID, String branchID) {
         byte[] front = "<<<<<<< HEAD\n".getBytes(StandardCharsets.UTF_8);
         byte[] middle = "=======\n".getBytes(StandardCharsets.UTF_8);
         byte[] rear = ">>>>>>>\n".getBytes(StandardCharsets.UTF_8);
