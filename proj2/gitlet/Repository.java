@@ -365,7 +365,13 @@ public class Repository {
     public void checkout(String commitId, String s, String fileName) {
         List<String> commitList = Utils.plainFilenamesIn(GITLET_COMMITS);
 
-        boolean commitExists = commitList.contains(commitId);
+        boolean commitExists = false;
+        for (String commitFile : commitList) {
+            if (commitFile.contains(commitId)) {
+                commitExists = true;
+                break;
+            }
+        }
 
         if (commitExists) {
             Commit commit = RepoUtils.getCommit(commitId);
