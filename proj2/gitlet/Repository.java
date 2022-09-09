@@ -596,49 +596,43 @@ public class Repository {
             System.out.println("Current branch fast-forwarded.");
             return;
         }
+
         boolean conflict = false;
-        for (String fileName: currentCommit.getBlobs().keySet()) {
-            String currentFileID = currentCommit.getBlobs().get(fileName);
-            String branchFileID = branchCommit.getBlobs().get(fileName);
-            String spID = spiltPoint.getBlobs().get(fileName);
-            if (spiltPoint.getBlobs().containsKey(fileName)
-                    && branchCommit.getBlobs().containsKey(fileName)) {
-                // 1(2) 文件在 branch 中修改但是没有在 HEAD 中修改, checkout 和 staged
-                if (!spID.equals(branchFileID) && spID.equals(currentFileID)) {
-                    checkout(branchID, "--", fileName);
-                    stagingArea.getAddFiles().put(fileName, branchFileID);
-                    stagingArea.save();
+        HashMap<String, String> currentMap = currentCommit.getBlobs();
+        HashMap<String, String> branchMap = branchCommit.getBlobs();
+        HashMap<String, String> spMap = spiltPoint.getBlobs();
+        // 在分割点中的文件
+        for (String fileName: spiltPoint.getBlobs().keySet()) {
+            String currentFileID = currentMap.get(fileName);
+            String branchFileID = branchMap.get(fileName);
+            String spFileID = spMap.get(fileName);
+            if (spFileID.equals(currentFileID) && !spFileID.equals(branchFileID)) {
+                if (branchFileID != null) {     //1
+                    checkout(branchCommit, fileName);
+                } else {    //6
+                    rm(fileName);
                 }
-                if (!spID.equals(branchFileID) && !spID.equals(currentFileID) && !branchFileID.equals(currentFileID)) {
-                    File mergeFile = join(CWD, fileName);
-                    String contents = mergeContents(currentFileID, branchFileID);
-                    Utils.writeContents(mergeFile, contents);
-                    conflict = true;
+            } else if (spFileID.equals(branchFileID) && !spFileID.equals(currentFileID)) {
+                if (currentFileID == null) {    //7         2(currentFileID != null)无操作
+                    rm(fileName);
                 }
+            } else if (!spFileID.equals(currentFileID)) {   //8 冲突
+                File mergeFile = join(CWD, fileName);
+                String contents = mergeContents(currentFileID, branchFileID);
+                Utils.writeContents(mergeFile, contents);
+                conflict = true;
             }
         }
-        List<String> spFile = new ArrayList<>(spiltPoint.getBlobs().keySet());
-        List<String> commitFile = new ArrayList<>(currentCommit.getBlobs().keySet());
-        List<String> branchFile = new ArrayList<>(branchCommit.getBlobs().keySet());
-        // 5(4) 文件在分割点不存在的,只存在branchName中, checkout和staged
-        for (String file: branchFile) {
-            if (!spFile.contains(file) && !commitFile.contains(file)) {
-                checkout(branchID, "--", file);
-                stagingArea.getAddFiles().put(file, branchCommit.getBlobs().get(file));
+        // 不在分割点的文件
+        List<String> currentFile = new ArrayList<>(currentMap.keySet());
+        for (String fileName: branchMap.keySet()) {    //5          4反过来不用操作
+            if (!currentFile.contains(fileName)) {
+                checkout(branchCommit, fileName);
+                stagingArea.getAddFiles().put(fileName, branchCommit.getBlobs().get(fileName));
                 stagingArea.save();
             }
         }
-        // 6\7 文件在分割点存在, HEAD中没修改(ID不变),在branchName分支中不存在的,删除和untracked
-        for (String file: spFile) {
-            if (commitFile.contains(file) && !branchFile.contains(file)
-                    && spiltPoint.getBlobs().get(file).equals(currentCommit.getBlobs().get(file))) {
-                rm(file);
-            }
-            if (branchFile.contains(file) && !commitFile.contains(file)
-                    && spiltPoint.getBlobs().get(file).equals(branchCommit.getBlobs().get(file))) {
-                rm(file);
-            }
-        }
+
         if (conflict) {
             System.out.println("Encountered a merge conflict.");
         }
