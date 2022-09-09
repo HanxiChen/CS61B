@@ -618,7 +618,7 @@ public class Repository {
                 if (currentFileID == null) {    //7 在 branch 中没有被修改 在 HEAD 中不存在
                     Utils.restrictedDelete(join(CWD, fileName));  //2 (currentFileID != null)无操作
                 }
-            } else if (!spFileID.equals(currentFileID)) {   //8 冲突
+            } else if (!spFileID.equals(currentFileID) && currentFileID != null) {   //8 冲突
                 File mergeFile = join(CWD, fileName);
                 String contents = mergeContents(currentFileID, branchFileID);
                 Utils.writeContents(mergeFile, contents);
@@ -635,7 +635,6 @@ public class Repository {
                 stagingArea.save();
             }
         }
-
         if (conflict) {
             System.out.println("Encountered a merge conflict.");
         }
