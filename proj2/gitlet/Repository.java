@@ -152,7 +152,7 @@ public class Repository {
         }
 
         //处理parent
-        List<String> parents = curCommit.getParents();
+        List<String> parents = new ArrayList<>();
         parents.add(0, curCommit.getId());
 
         //创建新的commit,并将HEAD指向它
@@ -209,11 +209,10 @@ public class Repository {
         Commit commit = RepoUtils.getCurrentCommit(MASTER);
         ArrayList<String> parents = new ArrayList<>(commit.getParents());
 
-        printLogCommit(commit.getId());
-        for (String id : parents) {
-            printLogCommit(id);
+        while (commit.getParents().size() > 0) {
+            printLogCommit(commit);
+            commit = readObject(join(GITLET_COMMITS, commit.getParents().get(0) + ".txt"), Commit.class);
         }
-
     }
 
     /**
@@ -638,5 +637,7 @@ public class Repository {
         }
         String mergeCommitMessage = "Merged " + branchName + " into " + HEAD + ".";
         commit(mergeCommitMessage);
+        RepoUtils.modifyMergeParent(MASTER, branchID);
+
     }
 }

@@ -59,33 +59,34 @@ public class RepoUtils {
     /**
      * 打印 log 中 单个commit的信息
      */
-    static void printLogCommit(String fileName) {
-        Commit c = readObject(join(GITLET_COMMITS, fileName + ".txt"), Commit.class);
+    static void printLogCommit(Commit c) {
         System.out.println("===");
-        System.out.println("commit " + fileName);
+        System.out.println("commit " + c);
 
-        if (isMergeCommit(c.getMessage())) {
+        if (isMergeCommit(c)) {
             System.out.println(mergeParents(c));
         }
         System.out.println("Date: " + c.getTimeStamp());
         System.out.println(c.getMessage());
         System.out.println();
     }
-    private static boolean isMergeCommit(String message) {
-        return message.contains("Merged") && message.contains(" into ");
+    static void printLogCommit(String fileName) {
+        readObject(join(GITLET_COMMITS, fileName + ".txt"), Commit.class);
     }
     private static String mergeParents(Commit c) {
         String parent1 = c.getParents().get(0);
 
-        String parent2 = getMergeParent2(c.getMessage());
+        String parent2 = c.getParents().get(1);
 
         return "Merge: " + parent1.substring(0, 7) + " " + parent2.substring(0, 7);
     }
-    private static String getMergeParent2(String message) {
-        int start = message.indexOf(" into ") + 6;
-        return message.substring(start, message.length() - 1);
-    }
 
+    /**
+     * 判断 给定commit 是否是 mergeCommit
+     */
+    static boolean isMergeCommit(Commit c) {
+        return c.getParents().size() == 2;
+    }
     /**
      * 打印 status
      */
@@ -133,9 +134,9 @@ public class RepoUtils {
         List<String> pBranchCommit = branchCommit.getParents();
         List<String> pCurrentCommit = currentCommit.getParents();
 
-        if (isMergeCommit(branchCommit.getMessage())) {
+        if (isMergeCommit(branchCommit)) {
             pBranchCommit.add(branchCommit.getId());
-        } else if (isMergeCommit(currentCommit.getMessage())) {
+        } else if (isMergeCommit(currentCommit)) {
             pCurrentCommit.add(currentCommit.getId());
         }
 
@@ -166,5 +167,15 @@ public class RepoUtils {
         }
 
         return front + commit + middle + branch + rear;
+    }
+
+    /**
+     * 处理 merge操作后 commit 的 parent
+     */
+    static void modifyMergeParent(String master, String branchID) {
+        Commit mergeCommit = RepoUtils.getCurrentCommit(master);
+        List<String> parents = new ArrayList<>(mergeCommit.getParents());
+        parents.add(1, branchID);
+        mergeCommit.setParents(parents);
     }
 }
