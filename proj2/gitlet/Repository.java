@@ -209,8 +209,11 @@ public class Repository {
     public void log() {
         Commit commit = RepoUtils.getCurrentCommit(MASTER);
 
-        while (commit.getParents().size() > 0) {
+        while (commit != null) {
             printLogCommit(commit);
+            if (commit.getParents().size() == 0) {
+                break;
+            }
             commit = readObject(join(GITLET_COMMITS, commit.getParents().get(0) + ".txt"), Commit.class);
         }
     }
