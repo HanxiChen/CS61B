@@ -75,12 +75,15 @@ public class RepoUtils {
         return message.contains("Merged") && message.contains(" into ");
     }
     private static String mergeParents(Commit c) {
-        String parentID = c.getParents().get(0);
+        String parent1 = c.getParents().get(0);
 
-        String master = Utils.readContentsAsString(GITLET_HEAD);
-        String masterID = Utils.readContentsAsString(join(GITLET_BRANCHES, master + ".txt"));
+        String parent2 = getMergeParent2(c.getMessage());
 
-        return "Merge: " + parentID.substring(0, 7) + " " + masterID.substring(0, 7);
+        return "Merge: " + parent1.substring(0, 7) + " " + parent2.substring(0, 7);
+    }
+    private static String getMergeParent2(String message) {
+        int start = message.indexOf(" into ") + 6;
+        return message.substring(start, message.length() - 1);
     }
 
     /**
@@ -124,15 +127,18 @@ public class RepoUtils {
     }
 
     /**
-     * merge failure case
-     */
-
-    /**
      * 寻找 branch 和 当前分支 的分割点
      */
     static Commit getSpiltPoint(Commit branchCommit, Commit currentCommit) {
         List<String> pBranchCommit = branchCommit.getParents();
         List<String> pCurrentCommit = currentCommit.getParents();
+
+        if (isMergeCommit(branchCommit.getMessage())) {
+            pBranchCommit.add(branchCommit.getId());
+        } else if (isMergeCommit(currentCommit.getMessage())) {
+            pCurrentCommit.add(currentCommit.getId());
+        }
+
         for (String commitID: pBranchCommit) {
             if (pCurrentCommit.contains(commitID)) {
                 return Utils.readObject(
@@ -153,8 +159,11 @@ public class RepoUtils {
         byte[] commitC = readObject(join(GITLET_BLOBS, commitID + ".txt"), Blob.class).getContent();
         String commit = new String(commitC);
 
-        byte[] branchC = readObject(join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
-        String branch = new String(branchC);
+        String branch = null;
+        if (branchID != null) {
+            byte[] branchC = readObject(join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
+            branch = new String(branchC);
+        }
 
         return front + commit + middle + branch + rear;
     }
