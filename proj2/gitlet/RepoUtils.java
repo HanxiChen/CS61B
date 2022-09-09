@@ -177,9 +177,10 @@ public class RepoUtils {
         byte[] commitC = readObject(join(GITLET_BLOBS, commitID + ".txt"), Blob.class).getContent();
         String commit = new String(commitC);
 
-        String branch = null;
+        String branch = "";
         if (branchID != null) {
-            byte[] branchC = readObject(join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
+            byte[] branchC = readObject(
+                    join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
             branch = new String(branchC);
         }
 

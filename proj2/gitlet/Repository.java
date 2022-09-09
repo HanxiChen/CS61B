@@ -214,7 +214,8 @@ public class Repository {
             if (commit.getParents().size() == 0) {
                 break;
             }
-            commit = readObject(join(GITLET_COMMITS, commit.getParents().get(0) + ".txt"), Commit.class);
+            commit = readObject(
+                    join(GITLET_COMMITS, commit.getParents().get(0) + ".txt"), Commit.class);
         }
     }
 
@@ -607,15 +608,15 @@ public class Repository {
             String currentFileID = currentMap.get(fileName);
             String branchFileID = branchMap.get(fileName);
             String spFileID = spMap.get(fileName);
-            if (spFileID.equals(currentFileID) && !spFileID.equals(branchFileID)) {         //在 HEAD 中没有被修改
+            if (spFileID.equals(currentFileID) && !spFileID.equals(branchFileID)) {  //在 HEAD 中没有被修改
                 if (branchFileID != null) {     //1 在branch中被修改了
                     checkout(branchCommit, fileName);
                 } else {    //6  在branch中不存在
                     rm(fileName);
                 }
-            } else if (spFileID.equals(branchFileID) && !spFileID.equals(currentFileID)) {  //在 branch 中没有被修改
-                if (currentFileID == null) {    //7 在 HEAD 中不存在        2(currentFileID != null)无操作
-                    Utils.restrictedDelete(join(CWD, fileName));
+            } else if (spFileID.equals(branchFileID) && !spFileID.equals(currentFileID)) {
+                if (currentFileID == null) {    //7 在 branch 中没有被修改 在 HEAD 中不存在
+                    Utils.restrictedDelete(join(CWD, fileName));  //2 (currentFileID != null)无操作
                 }
             } else if (!spFileID.equals(currentFileID)) {   //8 冲突
                 File mergeFile = join(CWD, fileName);
@@ -641,6 +642,5 @@ public class Repository {
         String mergeCommitMessage = "Merged " + branchName + " into " + HEAD + ".";
         commit(mergeCommitMessage);
         RepoUtils.modifyMergeParent(MASTER, branchID);
-
     }
 }
