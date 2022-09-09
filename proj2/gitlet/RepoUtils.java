@@ -171,8 +171,8 @@ public class RepoUtils {
      */
     static String mergeContents(String commitID, String branchID) {
         String front = "<<<<<<< HEAD\n";
-        String middle = "=======\n";
-        String rear = ">>>>>>>\n";
+        String middle = "\n=======";
+        String rear = "\n>>>>>>>\n";
 
         byte[] commitC = readObject(join(GITLET_BLOBS, commitID + ".txt"), Blob.class).getContent();
         String commit = new String(commitC);
@@ -181,7 +181,7 @@ public class RepoUtils {
         if (branchID != null) {
             byte[] branchC = readObject(
                     join(GITLET_BLOBS, branchID + ".txt"), Blob.class).getContent();
-            branch = new String(branchC);
+            branch = "\n" + new String(branchC);
         }
 
         return front + commit + middle + branch + rear;
