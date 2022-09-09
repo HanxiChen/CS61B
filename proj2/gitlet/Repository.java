@@ -229,7 +229,6 @@ public class Repository {
             return;
         }
         for (String fileName : fileNameList) {
-            fileName = fileName.substring(0, fileName.length() - 4);
             printLogCommit(fileName);
         }
     }
@@ -627,8 +626,9 @@ public class Repository {
         }
         // 不在分割点的文件
         List<String> currentFile = new ArrayList<>(currentMap.keySet());
+        List<String> spFile = new ArrayList<>(spMap.keySet());
         for (String fileName: branchMap.keySet()) {    //5          4反过来不用操作
-            if (!currentFile.contains(fileName)) {
+            if (!currentFile.contains(fileName) && !spFile.contains(fileName)) {
                 checkout(branchCommit, fileName);
                 stagingArea.getAddFiles().put(fileName, branchCommit.getBlobs().get(fileName));
                 stagingArea.save();

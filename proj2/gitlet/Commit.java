@@ -97,4 +97,7 @@ public class Commit implements Serializable {
         return commitFile;
     }
 
+    public void setParents(List<String> parents) {
+        this.parents = parents;
+    }
 }

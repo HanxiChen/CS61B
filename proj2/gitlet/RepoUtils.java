@@ -86,7 +86,7 @@ public class RepoUtils {
         System.out.println();
     }
     static void printLogCommit(String fileName) {
-        readObject(join(GITLET_COMMITS, fileName + ".txt"), Commit.class);
+        printLogCommit(readObject(join(GITLET_COMMITS, fileName), Commit.class));
     }
     private static String mergeParents(Commit c) {
         String parent1 = c.getParents().get(0);
@@ -147,8 +147,14 @@ public class RepoUtils {
      */
     static Commit getSpiltPoint(Commit branchCommit, Commit currentCommit) {
         List<String> pBranchCommit = getParentsList(branchCommit);
-
         List<String> pCurrentCommit = getParentsList(currentCommit);
+
+        if (isMergeCommit(branchCommit)) {
+            pBranchCommit.add(1, branchCommit.getParents().get(1));
+        }
+        if (isMergeCommit(currentCommit)) {
+            pCurrentCommit.add(1, currentCommit.getParents().get(1));
+        }
 
         for (String commitID: pBranchCommit) {
             if (pCurrentCommit.contains(commitID)) {
@@ -185,6 +191,8 @@ public class RepoUtils {
      */
     static void modifyMergeParent(String master, String branchID) {
         Commit mergeCommit = RepoUtils.getCurrentCommit(master);
-        mergeCommit.getParents().add(1, branchID);
+        List<String> parent = mergeCommit.getParents();
+        parent.add(1, branchID);
+        mergeCommit.setParents(parent);
     }
 }
