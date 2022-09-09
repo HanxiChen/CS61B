@@ -191,8 +191,9 @@ public class RepoUtils {
      */
     static void modifyMergeParent(String master, String branchID) {
         Commit mergeCommit = RepoUtils.getCurrentCommit(master);
-        List<String> parent = mergeCommit.getParents();
-        parent.add(1, branchID);
-        mergeCommit.setParents(parent);
+
+        mergeCommit.getParents().add(1, branchID);
+
+        Utils.writeObject(join(GITLET_COMMITS, mergeCommit.getId() + ".txt"), mergeCommit);
     }
 }
