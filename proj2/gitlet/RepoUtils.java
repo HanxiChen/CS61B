@@ -36,6 +36,21 @@ public class RepoUtils {
     }
 
     /**
+     * 获取指定 commit 的 List<String> parents
+     */
+    static List<String> getParentsList(Commit commit) {
+        Commit c = commit;
+
+        List<String> parentsList = new ArrayList<>();
+        while (c.getParents().size() > 0) {
+            parentsList.add(c.getParents().get(0));
+            c = readObject(join(GITLET_COMMITS, c.getParents().get(0) + ".txt"), Commit.class);
+        }
+
+        return parentsList;
+    }
+
+    /**
      * 获取指定　ID　的　parentCommit
      */
     static Commit getParentCommit(Commit commit) {
@@ -61,7 +76,7 @@ public class RepoUtils {
      */
     static void printLogCommit(Commit c) {
         System.out.println("===");
-        System.out.println("commit " + c);
+        System.out.println("commit " + c.getId());
 
         if (isMergeCommit(c)) {
             System.out.println(mergeParents(c));
@@ -131,14 +146,9 @@ public class RepoUtils {
      * 寻找 branch 和 当前分支 的分割点
      */
     static Commit getSpiltPoint(Commit branchCommit, Commit currentCommit) {
-        List<String> pBranchCommit = branchCommit.getParents();
-        List<String> pCurrentCommit = currentCommit.getParents();
+        List<String> pBranchCommit = getParentsList(branchCommit);
 
-        if (isMergeCommit(branchCommit)) {
-            pBranchCommit.add(branchCommit.getId());
-        } else if (isMergeCommit(currentCommit)) {
-            pCurrentCommit.add(currentCommit.getId());
-        }
+        List<String> pCurrentCommit = getParentsList(currentCommit);
 
         for (String commitID: pBranchCommit) {
             if (pCurrentCommit.contains(commitID)) {
@@ -146,6 +156,7 @@ public class RepoUtils {
                         join(GITLET_COMMITS, commitID + ".txt"), Commit.class);
             }
         }
+
         return null;
     }
 
@@ -174,8 +185,6 @@ public class RepoUtils {
      */
     static void modifyMergeParent(String master, String branchID) {
         Commit mergeCommit = RepoUtils.getCurrentCommit(master);
-        List<String> parents = new ArrayList<>(mergeCommit.getParents());
-        parents.add(1, branchID);
-        mergeCommit.setParents(parents);
+        mergeCommit.getParents().add(1, branchID);
     }
 }

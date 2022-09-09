@@ -186,6 +186,7 @@ public class Repository {
         // 判断是否被追踪(是否在当前commit的blobs中)
         if (blobs.containsKey(fileName)) {
             stagingArea.getRemovedFiles().put(fileName, blobs.get(fileName));
+            curCommit.getBlobs().remove(fileName);
             if (getWorkFile().contains(fileName)) {
                 restrictedDelete(fileName);
             }
@@ -207,7 +208,6 @@ public class Repository {
      */
     public void log() {
         Commit commit = RepoUtils.getCurrentCommit(MASTER);
-        ArrayList<String> parents = new ArrayList<>(commit.getParents());
 
         while (commit.getParents().size() > 0) {
             printLogCommit(commit);
@@ -587,10 +587,10 @@ public class Repository {
         // 寻找 split point 分割点
         Commit spiltPoint = getSpiltPoint(branchCommit, currentCommit);
         // 对分割点进行判断和操作
-        if (currentCommit.getParents().contains(branchCommit.getId())) {
+        if (getParentsList(currentCommit).contains(branchCommit.getId())) {
             System.out.println("Given branch is an ancestor of the current branch.");
             return;
-        } else if (branchCommit.getParents().contains(currentCommit.getId())) {
+        } else if (getParentsList(branchCommit).contains(currentCommit.getId())) {
             checkout(branchName, branchCommit);
             System.out.println("Current branch fast-forwarded.");
             return;
