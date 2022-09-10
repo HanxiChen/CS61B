@@ -598,7 +598,6 @@ public class Repository {
             System.out.println("Current branch fast-forwarded.");
             return;
         }
-
         boolean conflict = false;
         HashMap<String, String> currentMap = currentCommit.getBlobs();
         HashMap<String, String> branchMap = branchCommit.getBlobs();
