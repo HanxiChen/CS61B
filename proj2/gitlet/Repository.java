@@ -622,6 +622,7 @@ public class Repository {
                 File mergeFile = join(CWD, fileName);
                 String contents = mergeContents(currentFileID, branchFileID);
                 Utils.writeContents(mergeFile, contents);
+                add(fileName);
                 conflict = true;
             }
         }
